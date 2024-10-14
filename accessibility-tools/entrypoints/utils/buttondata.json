@@ -1,0 +1,56 @@
+[
+    {
+        "id": 0,
+        "name": "Play",
+        "color": "#411D81",
+        "hover_color": "#2F155E"
+    },
+    {
+        "id": 1,
+        "name": "Text",
+        "color": "#265793",
+        "hover_color": "#1B3D66"
+    },
+    {
+        "id": 2,
+        "name": "Theme",
+        "color": "#1A8719",
+        "hover_color": "#135E12"
+    },
+    {
+        "id": 3,
+        "name": "Dictionary",
+        "color": "#A1175E",
+        "hover_color": "#690F3D"
+    },
+    {
+        "id": 4,
+        "name": "Translate",
+        "color": "#9E1722",
+        "hover_color": "#660E15"
+    },
+    {
+        "id": 5,
+        "name": "Magnify",
+        "color": "#0C767F",
+        "hover_color": "#095359"
+    },
+    {
+        "id": 6,
+        "name": "Manual",
+        "color": "#4E4E4E",
+        "hover_color": "#383838"
+    },
+    {
+        "id": 7,
+        "name": "Settings",
+        "color": "#4E4E4E",
+        "hover_color": "#383838"
+    },
+    {
+        "id": 8,
+        "name": "Hide",
+        "color": "white",
+        "hover_color": "#E0E0E0"
+    }
+]

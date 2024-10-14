@@ -1,7 +1,5 @@
 .gitattributes
-/datasets
-/classifier/datasets
 /__pycache__
+/classifier/datasets
 /classificer/__pycache__
-/saves
-/accessibility-tools/node_modules
+/classifier/saves

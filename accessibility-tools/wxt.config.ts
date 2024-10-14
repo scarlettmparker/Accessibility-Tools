@@ -7,7 +7,7 @@ export default defineConfig({
     web_accessible_resources: [
       {
         matches: ["*://*/*"],
-        resources: ["/assets/styles/*.css"],
+        resources: ["/assets/styles/*.css", "/assets/images/*.png"]
       }
     ]
   },
