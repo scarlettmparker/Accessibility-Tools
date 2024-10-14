@@ -3,6 +3,7 @@ import "wxt/browser";
 
 declare module "wxt/browser" {
   export type PublicPath =
+    | "/api/wiktionary.ts"
     | "/assets/images/buttons/0.png"
     | "/assets/images/buttons/1.png"
     | "/assets/images/buttons/2.png"

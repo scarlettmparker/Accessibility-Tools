@@ -4,10 +4,14 @@ import { defineConfig } from 'wxt';
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   manifest: {
+    permissions: [
+      "activeTab",
+      "https://en.wiktionary.org/*",
+    ],
     web_accessible_resources: [
       {
         matches: ["*://*/*"],
-        resources: ["/assets/styles/*.css", "/assets/images/*.png"]
+        resources: ["/assets/styles/*.css", "/assets/images/*.png", "/api/*.ts"]
       }
     ]
   },

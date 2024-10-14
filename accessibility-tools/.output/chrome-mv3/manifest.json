@@ -10,6 +10,12 @@
     "96": "icon/96.png",
     "128": "icon/128.png"
   },
+  "permissions": [
+    "activeTab",
+    "https://en.wiktionary.org/*",
+    "tabs",
+    "scripting"
+  ],
   "web_accessible_resources": [
     {
       "matches": [
@@ -17,7 +23,8 @@
       ],
       "resources": [
         "/assets/styles/*.css",
-        "/assets/images/*.png"
+        "/assets/images/*.png",
+        "/api/*.ts"
       ]
     }
   ],
@@ -43,9 +50,5 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval' http://localhost:3000; object-src 'self';",
     "sandbox": "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:3000; sandbox allow-scripts allow-forms allow-popups allow-modals; child-src 'self';"
-  },
-  "permissions": [
-    "tabs",
-    "scripting"
-  ]
+  }
 }

@@ -8,7 +8,7 @@ import torchvision.transforms as transforms
 from sklearn.model_selection import train_test_split, KFold
 from torchvision import datasets
 from torch.utils.data import DataLoader, Subset
-from largemodel import NeuralNet
+from model import NeuralNet
 from tqdm import tqdm
 
 # hyper parameters
@@ -35,6 +35,13 @@ full_dataset = datasets.ImageFolder(root=dataset_path, transform=transform)
 
 # get indices and labels for train-test split
 dataset_size = len(full_dataset)
+
+labels = []
+with tqdm(total=dataset_size, desc='Loading Dataset', unit='image') as pbar:
+    for i in range(dataset_size):
+        labels.append(full_dataset[i][1])
+        pbar.update(1)
+        
 indices = list(range(dataset_size))
 labels = [full_dataset[i][1] for i in range(dataset_size)]
 
@@ -86,8 +93,8 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(train_indices)):
     train_subset = Subset(train_data, train_idx)
     val_subset = Subset(train_data, val_idx)
     
-    train_loader = DataLoader(train_subset, batch_size=BATCH_SIZE, shuffle=True)
-    val_loader = DataLoader(val_subset, batch_size=BATCH_SIZE, shuffle=False)
+    train_loader = DataLoader(train_subset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4, pin_memory=True, persistent_workers=True)
+    val_loader = DataLoader(val_subset, batch_size=BATCH_SIZE, shuffle=False, num_workers=4, pin_memory=True)
     
     model = NeuralNet().to(device)
     criterion = nn.CrossEntropyLoss()
