@@ -93,8 +93,8 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(train_indices)):
     train_subset = Subset(train_data, train_idx)
     val_subset = Subset(train_data, val_idx)
     
-    train_loader = DataLoader(train_subset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4, pin_memory=True, persistent_workers=True)
-    val_loader = DataLoader(val_subset, batch_size=BATCH_SIZE, shuffle=False, num_workers=4, pin_memory=True)
+    train_loader = DataLoader(train_subset, batch_size=BATCH_SIZE, shuffle=True)
+    val_loader = DataLoader(val_subset, batch_size=BATCH_SIZE, shuffle=False)
     
     model = NeuralNet().to(device)
     criterion = nn.CrossEntropyLoss()

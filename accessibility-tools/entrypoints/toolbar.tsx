@@ -124,6 +124,7 @@ export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
     // load the css file for the modal
     const [numOpenMenus, setNumOpenMenus] = useState(Array(buttons.length - 1).fill(0));
     useLoadCss(shadowRoot, 'toolbar.css');
+    useLoadCss(shadowRoot, 'dictionary.css');
 
     return (
         <div className="toolbarWrapper">

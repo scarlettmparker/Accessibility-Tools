@@ -4,6 +4,7 @@ import { HTMLElement as ParsedHTMLElement } from 'node-html-parser';
 import { useEffect } from "react";
 
 // all parts of speech on wiktionary (there are more and i will eventually add them all)
+/*
 const PARTS_OF_SPEECH = {
     adposition: "Adposition",
     affix: "Affix",
@@ -64,11 +65,12 @@ const PARTS_OF_SPEECH = {
     gerund: "Gerund",
     idiom: "Idiom",
 }
+*/
 
 // interface for paragraph data
 interface ParagraphData {
     text: string;
-    styles: string[];
+    partOfSpeech: string;
 }
 
 // custom hook to fetch wiktionary data
@@ -94,15 +96,24 @@ const useWiktionaryData = (word: string) => {
 
 // word lookup component
 const WordLookup: React.FC = React.memo(() => {
-    const wiktionaryData = useWiktionaryData("hello");
+    const word = "hello";
+    const wiktionaryLookup = useWiktionaryData(word);
+    const [processedWiktionaryData, setProcessedWiktionaryData] = useState<Record<string, ParagraphData>>({});
 
-    if (wiktionaryData) {
-        parseWiktionaryData(wiktionaryData);
-    }
+    useEffect(() => {
+        if (wiktionaryLookup) {
+            setProcessedWiktionaryData(parseWiktionaryData(wiktionaryLookup, word));
+        }
+    }, [wiktionaryLookup]);
 
     return (
-        <div>
-            Hi there!
+        <div className="wiktionaryData">
+            {Object.keys(processedWiktionaryData).map((key) => (
+                <>
+                    <div className="posTitle">{processedWiktionaryData[key].partOfSpeech}</div>
+                    <div className="posBody" key={key} dangerouslySetInnerHTML={{ __html: processedWiktionaryData[key].text }} />
+                </>
+            ))}
         </div>
     );
 });
@@ -116,8 +127,29 @@ async function getWiktionaryData(word: string): Promise<string | undefined> {
     });
 }
 
-function parseWiktionaryData(data: string) {
+function parseWiktionaryData(data: string, word: string) {
     const root = parse(data);
+    const WIKTIONARY_URL = "https://en.wiktionary.org";
+
+    // remove all audio metadata divs
+    const audioMetaElements = root.querySelectorAll('td.audiometa');
+    audioMetaElements.forEach((element) => {
+        element.remove();
+    });
+
+    // update all a href links
+    const links = root.querySelectorAll('a');
+    links.forEach((a) => {
+        const href = a.getAttribute('href');
+        // only update relative links
+        if (href && !href.startsWith('http')) {
+            // update the href to open in a new tab and point to correct url
+            a.setAttribute('href', WIKTIONARY_URL + href);
+            a.setAttribute('target', '_blank');
+        }
+    });
+
+    const wiktionaryData: Record<string, ParagraphData> = {};
 
     // get the headers
     const h3Elements = root.querySelectorAll('h3');
@@ -127,10 +159,12 @@ function parseWiktionaryData(data: string) {
             // get the list of elements under the h3 element
             const listElements = Object.values(getHeaderChildren(h3Element));
             listElements.forEach((paragraphData) => {
-                console.log(paragraphData);
+                wiktionaryData[paragraphData.text] = paragraphData;
             });
         }
     });
+
+    return wiktionaryData;
 }
 
 // get the data after the headers for processing
@@ -145,8 +179,6 @@ function getHeaderChildren(header: ParsedHTMLElement): Record<string, ParagraphD
         if (nextElement.classList && nextElement.classList.contains('mw-heading')) {
             break;
         }
-
-        const styles: string[] = Array.from(nextElement.classList as unknown as DOMTokenList);
         
         // capture additional formatting
         const htmlText = nextElement.innerHTML;
@@ -154,8 +186,9 @@ function getHeaderChildren(header: ParsedHTMLElement): Record<string, ParagraphD
         // add to the paragraphs object
         paragraphs[`paragraph_${index}`] = {
             text: htmlText,
-            styles,
+            partOfSpeech: header.id
         };
+
         index++;
 
         nextElement = nextElement.nextElementSibling;

@@ -14,6 +14,7 @@ declare module "wxt/browser" {
     | "/assets/images/buttons/7.png"
     | "/assets/images/buttons/8.png"
     | "/assets/images/buttons/9.png"
+    | "/assets/styles/dictionary.css"
     | "/assets/styles/toolbar.css"
     | "/background.js"
     | "/content-scripts/content.js"

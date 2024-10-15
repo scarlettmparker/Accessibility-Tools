@@ -1,5 +1,3 @@
-import { parse } from 'node-html-parser';
-
 export default defineBackground(() => {
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === "fetchWiktionaryData") {
