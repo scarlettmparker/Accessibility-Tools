@@ -5,12 +5,26 @@
     height: 75px;
     left: 50%;
     bottom: 0;
+    letter-spacing: 0;
     z-index: 2147483647;
     transform: translateX(-50%);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 	border: 0.1rem solid rgba(216, 216, 216, 1);
     position: fixed;
     background-color: white;
+    line-height: normal;
+}
+
+.extButton {
+    background-color: white;
+    color: #33394b;
+    border: 1px solid #33394b;
+    height: 25px;
+}
+
+.extButton:hover {
+    background-color: #33394b;
+    color: white;
 }
 
 .buttonWrapper, .rightButtonWrapper {
@@ -33,6 +47,7 @@
 
 .rightButtonWrapper {
     right: 4px;
+    z-index: 2;
 }
 
 .leftButtons, .rightButtons {

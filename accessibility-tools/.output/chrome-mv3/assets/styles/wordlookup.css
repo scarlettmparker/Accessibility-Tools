@@ -1,0 +1,55 @@
+.wiktionaryData {
+    height: 95%;
+    width: 95%;
+    max-width: 100%;
+    font-size: 14px;
+    position: relative;
+    display: block;
+    overflow: auto;
+    white-space: normal;
+    word-wrap: break-word;
+    user-select: text;
+}
+
+.searchBarWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.dictionarySearch {
+    font-size: 14px;
+    height: 19px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.posTitle {
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.posBody {
+    margin-bottom: 10px;
+}
+
+.posBody ul {
+    margin-left: -14px;
+}
+
+.posBody dl {
+    margin-left: -30px;
+}
+
+.wiktionaryData a {
+    color: #1f51db;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.wiktionaryData a:hover {
+    color: #9106a3;
+}

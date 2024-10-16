@@ -4,10 +4,10 @@ import { HTMLElement as ParsedHTMLElement } from 'node-html-parser';
 import { useEffect } from "react";
 
 // all parts of speech on wiktionary (there are more and i will eventually add them all)
-/*
 const PARTS_OF_SPEECH = {
     adposition: "Adposition",
     affix: "Affix",
+    antonyms: "Antonyms",
     character: "Character",
     number: "Number",
     symbol: "Symbol",
@@ -21,6 +21,7 @@ const PARTS_OF_SPEECH = {
     contraction: "Contraction",
     counter: "Counter",
     determiner: "Determiner",
+    etymology: "Etymology",
     ideophone: "Ideophone",
     interjection: "Interjection",
     noun: "Noun",
@@ -30,6 +31,7 @@ const PARTS_OF_SPEECH = {
     postposition: "Postposition",
     preposition: "Preposition",
     pronoun: "Pronoun",
+    pronunciation: "Pronunciation",
     "proper-noun": "Proper_noun",
     verb: "Verb",
     circumfix: "Circumfix",
@@ -44,6 +46,7 @@ const PARTS_OF_SPEECH = {
     ligature: "Ligature",
     "punctuation-mark": "Punctuation_mark",
     syllable: "Syllable",
+    synonyms: "Synonyms",
     phrase: "Phrase",
     proverb: "Proverb",
     "prepositional-phrase": "Prepositional_phrase",
@@ -65,7 +68,7 @@ const PARTS_OF_SPEECH = {
     gerund: "Gerund",
     idiom: "Idiom",
 }
-*/
+
 
 // interface for paragraph data
 interface ParagraphData {
@@ -77,42 +80,61 @@ interface ParagraphData {
 const useWiktionaryData = (word: string) => {
     const [wiktionaryData, setWiktionaryData] = useState<string | undefined>(undefined);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await getWiktionaryData(word);
-                if (data) {
-                    setWiktionaryData(data);
-                }
-            } catch (error) {
-                console.error('Error fetching Wiktionary data:', error);
+    const fetchData = async () => {
+        try {
+            const data = await getWiktionaryData(word);
+            if (data) {
+                setWiktionaryData(data);
             }
-        };
-        fetchData();
-    }, [word]);
+        } catch (error) {
+            console.error('Error fetching Wiktionary data:', error);
+        }
+    };
 
-    return wiktionaryData;
+    return { wiktionaryData, fetchData };
+};
+
+interface SearchBarProps {
+    setProcessedWiktionaryData: (value: Record<string, ParagraphData>) => void;
+}
+
+// search bar to get wiktionary data
+const SearchBar: React.FC<SearchBarProps> = ({ setProcessedWiktionaryData }) => {
+    const [inputWord, setInputWord] = useState<string>('');
+    const { wiktionaryData, fetchData } = useWiktionaryData(inputWord);
+
+    // process the wiktionary data when the input word is set
+    useEffect(() => {
+        if (wiktionaryData) {
+            const processedData = parseWiktionaryData(wiktionaryData, inputWord);
+            setProcessedWiktionaryData(processedData);
+        }
+    }, [wiktionaryData, setProcessedWiktionaryData]);
+
+    const handleSearch = () => {
+        fetchData();
+    };
+
+    return (
+        <div className="searchBarWrapper">
+            <input type="text" placeholder="Search word..." className="dictionarySearch" value={inputWord} onChange={(e) => setInputWord(e.target.value)} />
+            <button onClick={handleSearch} className="extButton">Search</button>
+        </div>
+    );
 };
 
 // word lookup component
 const WordLookup: React.FC = React.memo(() => {
-    const word = "hello";
-    const wiktionaryLookup = useWiktionaryData(word);
     const [processedWiktionaryData, setProcessedWiktionaryData] = useState<Record<string, ParagraphData>>({});
-
-    useEffect(() => {
-        if (wiktionaryLookup) {
-            setProcessedWiktionaryData(parseWiktionaryData(wiktionaryLookup, word));
-        }
-    }, [wiktionaryLookup]);
 
     return (
         <div className="wiktionaryData">
+            <SearchBar setProcessedWiktionaryData={setProcessedWiktionaryData} />
             {Object.keys(processedWiktionaryData).map((key) => (
-                <>
+                <div key={key}>
                     <div className="posTitle">{processedWiktionaryData[key].partOfSpeech}</div>
-                    <div className="posBody" key={key} dangerouslySetInnerHTML={{ __html: processedWiktionaryData[key].text }} />
-                </>
+                    <div className="posBody" dangerouslySetInnerHTML={{ __html: processedWiktionaryData[key].text }} />
+                </div>
             ))}
         </div>
     );
@@ -164,6 +186,21 @@ function parseWiktionaryData(data: string, word: string) {
         }
     });
 
+    const partsOfSpeechValues = Object.values(PARTS_OF_SPEECH);
+
+
+    /* FILTER OUT POS, TO BE EXPANDED ON */
+
+
+    // remove any non valid parts of speech from the const
+    Object.entries(wiktionaryData).forEach(([key, paragraphData]) => {
+        const containsPartOfSpeech = partsOfSpeechValues.some(posValue => paragraphData.partOfSpeech.includes(posValue));
+        if (!containsPartOfSpeech) {
+            delete wiktionaryData[key];
+        }
+    });
+
+
     return wiktionaryData;
 }
 
@@ -179,10 +216,10 @@ function getHeaderChildren(header: ParsedHTMLElement): Record<string, ParagraphD
         if (nextElement.classList && nextElement.classList.contains('mw-heading')) {
             break;
         }
-        
+
         // capture additional formatting
         const htmlText = nextElement.innerHTML;
-        
+
         // add to the paragraphs object
         paragraphs[`paragraph_${index}`] = {
             text: htmlText,
