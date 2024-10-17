@@ -7,8 +7,7 @@ const TextModify: React.FC = React.memo(() => {
     return (
         <div className="textModify">
             <ModifyWrapper manipulation={0} label="Text Size" decreaseAlt="Decrease Size" increaseAlt="Increase Size" />
-            <ModifyWrapper manipulation={1} label="Line Height" decreaseAlt="Decrease Line Height" increaseAlt="Increase Line Height" />
-            <ModifyWrapper manipulation={2} label="Character Spacing" decreaseAlt="Decrease Spacing" increaseAlt="Increase Spacing" />
+            <ModifyWrapper manipulation={1} label="Character Spacing" decreaseAlt="Decrease Spacing" increaseAlt="Increase Spacing" />
         </div>
     );
 });

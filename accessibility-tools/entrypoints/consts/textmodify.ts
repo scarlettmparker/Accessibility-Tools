@@ -1,7 +1,6 @@
 // TEXT MANIPULATIONS
 export const textManipulations: Record<string, number> = {
     "size": 1.1,
-    "line-height": 0.2,
     "character-spacing": 0.05
 };
 

@@ -4,7 +4,7 @@ import { handleMouseEnter, handleClick, handleMouseDown, handleMouseLeave, handl
 import { Button } from './types/types';
 import { getButtonIcon } from './utils/utils';
 import { useAltTextPosition, useMenuPosition } from './utils/utils';
-import { applyTextManipulationsToAllElements, observer } from './utils/textmodify/manipulatetext';
+import { applyTextManipulationsToAllElements, mutationObserverCallback } from './utils/textmodify/manipulatetext';
 import { textManipulations } from './consts/textmodify';
 import buttons from './utils/buttondata.json';
 import TextModify from './menus/textmodify';
@@ -91,6 +91,7 @@ export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
     const leftButtonRef = useRef<HTMLDivElement>(null);
     const rightButtonRef = useRef<HTMLDivElement>(null);
 
+    const observer = new MutationObserver(mutationObserverCallback);
     // start observing the document for added nodes
     useEffect(() => {
         const savedModifications = localStorage.getItem('savedTextModifications');
@@ -116,7 +117,6 @@ export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
 
     let emptyTextModifications: Record<string, { negative: number, positive: number }> = {
         "size": { negative: 0, positive: 0 },
-        "line-height": { negative: 0, positive: 0 },
         "character-spacing": { negative: 0, positive: 0 },
     };
 
