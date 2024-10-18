@@ -1,4 +1,4 @@
-import buttons from './buttondata.json';
+import buttons from './json/buttondata.json';
 
 const BUTTON_PATH = "/assets/images/buttons/";
 

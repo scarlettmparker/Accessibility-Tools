@@ -6,7 +6,10 @@ export default defineConfig({
   manifest: {
     permissions: [
       "activeTab",
-      "https://en.wiktionary.org/*",
+      "http://localhost:8080/",
+      "https://localhost:8080/",
+      "http://localhost:8080/*",
+      "https://localhost:8080/*"
     ],
     web_accessible_resources: [
       {

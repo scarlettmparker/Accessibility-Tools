@@ -1,4 +1,4 @@
-import { Button } from './types';
+import { Button, ParagraphData } from './types';
 import { RefObject } from 'react';
 
 // interface for button handlers props
@@ -10,4 +10,8 @@ export interface ButtonHandlersProps {
     numOpenMenus?: number[];
     index?: number;
     buttonMenuRef?: React.RefObject<HTMLDivElement>;
+}
+
+export interface SearchBarProps {
+    setProcessedWiktionaryData: (value: Record<string, ParagraphData>) => void;
 }

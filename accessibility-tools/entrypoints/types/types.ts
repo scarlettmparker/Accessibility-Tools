@@ -6,3 +6,9 @@ export type Button = {
     hover_color: string;
     click_color: string;
 }
+
+// type for paragraph data
+export type ParagraphData = {
+    text: string;
+    partOfSpeech: string;
+}

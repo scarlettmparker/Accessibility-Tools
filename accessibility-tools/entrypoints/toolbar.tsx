@@ -6,9 +6,10 @@ import { getButtonIcon } from './utils/utils';
 import { useAltTextPosition, useMenuPosition } from './utils/utils';
 import { applyTextManipulationsToAllElements, mutationObserverCallback } from './utils/textmodify/manipulatetext';
 import { textManipulations } from './consts/textmodify';
-import buttons from './utils/buttondata.json';
+import buttons from './utils/json/buttondata.json';
 import TextModify from './menus/textmodify';
 import WordLookup from './menus/wordlookup';
+import Translate from './menus/translate';
 
 interface ToolbarModalProps {
     shadowRoot: ShadowRoot;
@@ -19,6 +20,7 @@ const BUTTON_SIZE = 58;
 const BUTTON_MENUS: { [key: number]: React.FC | undefined } = {
     1: TextModify,
     3: WordLookup,
+    4: Translate
 }
 
 // render the buttons using the button data
@@ -92,6 +94,7 @@ export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
     const rightButtonRef = useRef<HTMLDivElement>(null);
 
     const observer = new MutationObserver(mutationObserverCallback);
+
     // start observing the document for added nodes
     useEffect(() => {
         const savedModifications = localStorage.getItem('savedTextModifications');
