@@ -3,10 +3,11 @@ import socketserver
 import os
 import json
 import threading
+import importlib
 from pathlib import Path
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-from utils import set_cors_headers, handle_post_request, translate_text
+from utils import set_cors_headers
 from reload import ignore_files, reload_all_modules
 
 HOST = "localhost"
@@ -16,6 +17,41 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
     def _set_headers(self):
         set_cors_headers(self)
 
+    def load_api_module(self, endpoint):
+        """Dynamically loads the module from the api folder based on the endpoint"""
+        api_dir = os.path.join(main_dir, "api")
+        module_name = endpoint.strip('/')
+        module_path = os.path.join(api_dir, f"{module_name}.py")
+
+        # get endpoint from route and load packages
+        if os.path.exists(module_path):
+            spec = importlib.util.spec_from_file_location(module_name, module_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            return module
+        else:
+            return None
+
+    def handle_request(self, method):
+        """Handles the HTTP request by calling the appropriate function in the module"""
+        module = self.load_api_module(self.path)
+        
+        if module:
+            # determine the method (get, post, put, delete)
+            method_func = getattr(module, method.lower(), None)
+            if method_func:
+                # for POST/PUT parse the incoming data
+                if method.lower() in ['post', 'put']:
+                    content_length = int(self.headers['Content-Length'])
+                    post_data = self.rfile.read(content_length)
+                    data = json.loads(post_data)
+                    method_func(self, data)
+                else:
+                    method_func(self)
+            else:
+                self.send_error(405, f'Method {method.upper()} not allowed for {self.path}')
+        else:
+            self.send_error(404, 'Endpoint Not Found')
 
     # OPTIONS
     def do_OPTIONS(self):
@@ -23,35 +59,21 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
         self._set_headers()
         self.end_headers()
 
-
     # GET
     def do_GET(self):
-        if self.path == '/':
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self._set_headers()
-            self.end_headers()
-            
-            # simple http response, will be a dashboard at some point i think
-            self.wfile.write(b'<h1>Accessibility Tools API</h1>')
-        else:
-            self.send_error(404, 'Not Found')
-
+        self.handle_request('GET')
 
     # POST
     def do_POST(self):
-        if self.path == '/translate':
-            # get content and parse data
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-            data = json.loads(post_data)
-            raw_text = data.get('raw_text', '')
-            
-            # translate the text and send it back to the client
-            translated_text = translate_text(raw_text)
-            handle_post_request(self, {'translated_text': translated_text})
-        else:
-            self.send_error(404, 'Not Found')
+        self.handle_request('POST')
+
+    # PUT
+    def do_PUT(self):
+        self.handle_request('PUT')
+
+    # DELETE
+    def do_DELETE(self):
+        self.handle_request('DELETE')
 
 class EventHandler(FileSystemEventHandler):
     def __init__(self):

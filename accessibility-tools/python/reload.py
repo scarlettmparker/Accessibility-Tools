@@ -11,7 +11,8 @@ def ignore_files(file_path):
         r'\.pyc$',           
         r'\.pyo$',           
         r'\.tmp$',           
-        r'\.log$',           
+        r'\.log$',
+        r'cli\.py$'
     ]
     return any(pattern in file_path for pattern in ignored_patterns)
 
@@ -44,6 +45,14 @@ def get_directory_files(directory):
 
 def reload_module(module_name):
     """Reload an existing module or import a new one"""
+    ignored_modules = [
+        "cli"
+    ]
+    
+    if module_name in ignored_modules:
+        print(f"Skipping reload of module: {module_name}")
+        return
+    
     if module_name in sys.modules:
         try:
             importlib.reload(sys.modules[module_name])

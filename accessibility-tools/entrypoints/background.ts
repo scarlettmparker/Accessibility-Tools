@@ -18,9 +18,9 @@ export default defineBackground(() => {
 
     // TRANSLATE TEXT REQUEST
     if (request.type === "translateText") {
-      const { raw_text } = request;
+      const { data, language } = request;
 
-      TranslateText(raw_text)
+      TranslateText(data, language)
         .then((translatedText) => {
           sendResponse(translatedText);
         })
@@ -46,14 +46,14 @@ async function WiktionaryScrape(word: string) {
   return text;
 }
 
-async function TranslateText(raw_text: string) {
+async function TranslateText(data: { label: string, text: string }[], language: string) {
   // send to python backend for translation
   const response = await fetch('http://localhost:8080/translate', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ raw_text: raw_text })
+    body: JSON.stringify({ data, language })
   });
 
   // check if the response is ok

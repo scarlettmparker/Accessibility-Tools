@@ -95,6 +95,13 @@ export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
 
     const observer = new MutationObserver(mutationObserverCallback);
 
+    // allow menus to be closed with escape
+    const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+            setNumOpenMenus(Array(buttons.length - 1).fill(0));
+        }
+    };
+
     // start observing the document for added nodes
     useEffect(() => {
         const savedModifications = localStorage.getItem('savedTextModifications');
@@ -108,6 +115,8 @@ export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
         }
 
         observer.observe(document.body, { childList: true, subtree: true });
+        document.addEventListener('keydown', handleKeyDown);
+        
         return () => {
             observer.disconnect();
         };
