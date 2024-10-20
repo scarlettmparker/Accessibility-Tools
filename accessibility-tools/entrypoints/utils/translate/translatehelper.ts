@@ -10,18 +10,30 @@ const resetOriginalText = (originalData: { label: string, text: string }[]) => {
     });
 };
 
-export const fetchTranslation = async (data: { label: string, text: string }[], language: string) => {
-    // post to the server to translate on back-end
+const fetchTranslationBatch = async (batch: { label: string, text: string }[], language: string) => {
     const response = await fetch('http://localhost:8080/translate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ data, language })
+        body: JSON.stringify({ data: batch, language })
     });
 
     const result = await response.json();
     return result;
+};
+
+export const fetchTranslation = async (data: { label: string, text: string }[], language: string) => {
+    const batchSize = 100;
+    const batches = [];
+
+    for (let i = 0; i < data.length; i += batchSize) {
+        const batch = data.slice(i, i + batchSize);
+        batches.push(fetchTranslationBatch(batch, language));
+    }
+
+    const results = await Promise.all(batches);
+    return results.flatMap(result => result.translated_text);
 };
 
 export const filterTranslations = (translations: { label: string, text: string }[]) => {
@@ -42,8 +54,8 @@ export const useTranslationData = (data: { label: string, text: string }[], lang
             const result = await fetchTranslation(data, language);
 
             // filter out any empty translations
-            if (Array.isArray(result.translated_text)) {
-                setTranslationData(filterTranslations(result.translated_text));
+            if (Array.isArray(result)) {
+                setTranslationData(filterTranslations(result));
             } else {
                 console.error('Unexpected response format:', result);
             }
@@ -56,28 +68,40 @@ export const useTranslationData = (data: { label: string, text: string }[], lang
 };
 
 const getElementsWithText = () => {
-    // get elements from page and filter out styling
-    const elements = document.querySelectorAll('body *:not(script):not(style):not(head):not(meta)');
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
     const data: { label: string; text: string }[] = [];
     const original: { label: string; text: string }[] = [];
     const alphanumericRegex = /[a-zA-Z0-9]/; // regex ensure data is valid
+    let node: Node | null;
+    let index = 0;
 
-    elements.forEach((element, index) => {
-        const textNodes = Array.from(element.childNodes).filter(
-            (node) => node.nodeType === Node.TEXT_NODE && node.nodeValue?.trim() !== ''
-        );
-
-        if (textNodes.length > 0) {
-            const combinedText = textNodes.map((node) => node.nodeValue!.trim()).join(' ');
-            if (alphanumericRegex.test(combinedText) && combinedText.includes(' ') && !combinedText.includes('NaN')) {
-                // add class names to elements to put translations back in the correct place
-                const className = `translate-${index}`;
-                element.classList.add(className);
-                data.push({ label: className, text: combinedText });
-                original.push({ label: className, text: combinedText });
+    const processNodes = () => {
+        let count = 0;
+        // process 100 nodes per frame to avoid blocking the main thread
+        while ((node = walker.nextNode()) && count < 100) {
+            const parentElement = node.parentElement;
+            if (parentElement && !parentElement.matches('script, style, head, meta') && node.nodeValue?.trim() !== '') {
+                if (Array.from(parentElement.classList).some(className => className.startsWith('translate-'))) {
+                    continue;
+                }
+                const combinedText = node.nodeValue!.trim();
+                if (alphanumericRegex.test(combinedText) && combinedText.includes(' ') && !combinedText.includes('NaN')) {
+                    const className = `translate-${index}`;
+                    parentElement.classList.add(className);
+                    data.push({ label: className, text: combinedText });
+                    original.push({ label: className, text: combinedText });
+                    index++;
+                }
             }
+            count++;
         }
-    });
+
+        if (node) {
+            requestAnimationFrame(processNodes);
+        }
+    };
+
+    requestAnimationFrame(processNodes);
 
     return { data, original };
 };
