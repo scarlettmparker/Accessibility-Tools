@@ -1,84 +1,67 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useElementData, useTranslationData, useUpdateTranslatedText } from '../utils/translate/translatehelper';
+import languages from '../utils/json/languages.json';
 
-const useTranslationData = (data: { label: string, text: string }[], language: string) => {
-    const [translationData, setTranslationData] = useState<{ label: string, text: string }[]>([]);
+const LanguageMenu = ({ selectedLanguage, setSelectedLanguage, searchQuery }: { selectedLanguage: string, setSelectedLanguage: (value: string) => void, searchQuery: string }) => {
+    // filter languages based on search query
+    const filteredLanguages = languages.filter(language =>
+        language.language.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
-    const fetchData = useCallback(async () => {
-        try {
-            const response = await fetch('http://localhost:8080/translate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ data, language })
-            });
-            const result = await response.json();
-
-            // filter out empty translations
-            if (Array.isArray(result.translated_text)) {
-                setTranslationData(result.translated_text.filter((item: { label: string, text: string }) => item.text.length > 0));
-            } else {
-                console.error('Unexpected response format:', result);
-            }
-        } catch (error) {
-            console.error('Error fetching translation data:', error);
-        }
-    }, [data, language]); // added dependencies
-
-    return { translationData, fetchData };
+    return (
+        <div className="translateSelectMenu">
+            {filteredLanguages.map((language) => (
+                <span key={language.language_code} onClick={() => setSelectedLanguage(language.language_code)}
+                    className={`extButton languageButton ${selectedLanguage === language.language_code ? 'selected' : ''}`}>
+                    {language.language}
+                </span>
+            ))}
+        </div>
+    );
 };
 
-const Translate: React.FC = React.memo(() => {
-    const [elementData, setElementData] = useState<{ label: string, text: string }[]>([]);
+export const Translate: React.FC = React.memo(() => {
+    const [selectedLanguage, setSelectedLanguage] = useState(() => localStorage.getItem('selectedLanguage') || '');
+    const [searchQuery, setSearchQuery] = useState(() => localStorage.getItem('languageSearchQuery') || '');
+    const { elementData, originalData } = useElementData();
+    const { translationData, fetchData } = useTranslationData(elementData, selectedLanguage, originalData);
 
+    useUpdateTranslatedText(translationData);
+
+    // save selected language to localStorage
     useEffect(() => {
-        // get all elements on the page that contain text
-        const elements = document.querySelectorAll('body *:not(script):not(style):not(head):not(meta)');
-        const data: { label: string; text: string }[] = [];
-        const alphanumericRegex = /[a-zA-Z0-9]/;
-
-        elements.forEach((element, index) => {
-            // get all text nodes from the element
-            const textNodes = Array.from(element.childNodes).filter(
-                (node) => node.nodeType === Node.TEXT_NODE && node.nodeValue?.trim() !== ''
-            );
-
-            // check for valid text nodes
-            if (textNodes.length > 0) {
-                const combinedText = textNodes.map((node) => node.nodeValue!.trim()).join(' ');
-                if (alphanumericRegex.test(combinedText) && combinedText.includes(' ') && !combinedText.includes('NaN')) {
-                    // add classes to elements if they're valid text nodes
-                    const className = `translate-${index}`;
-                    element.classList.add(className);
-                    data.push({ label: className, text: combinedText });
-                }
-            }
-        });
-
-        setElementData(data);
-    }, []);
-
-    const { translationData, fetchData } = useTranslationData(elementData, 'el');
-
-    useEffect(() => {
-        fetchData();
-    }, [elementData, fetchData]);
-
-    useEffect(() => {
-        if (translationData.length > 0) {
-            // update the text content of the elements
-            translationData.forEach(({ label, text }) => {
-                const element = document.querySelector(`.${label}`);
-                if (element) {
-                    element.textContent = text;
-                }
-            });
+        if (selectedLanguage) {
+            localStorage.setItem('selectedLanguage', selectedLanguage);
+        } else {
+            localStorage.removeItem('selectedLanguage');
         }
-    }, [translationData]);
+    }, [selectedLanguage]);
+
+
+    // fetch data only when a valid language is selected
+    useEffect(() => {
+        if (selectedLanguage) {
+            fetchData();
+        }
+    }, [selectedLanguage, elementData, fetchData]);
+
+    // clear storage when leaving the page to save space :3
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            localStorage.removeItem('selectedLanguage');
+            localStorage.removeItem('originalData');
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
 
     return (
         <div className="translate">
-            <button onClick={async () => await fetchData()}>test translate page</button>
+            <input type="text" placeholder="Search languages..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="languageSearchBar" />
+            <LanguageMenu selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} searchQuery={searchQuery} />
         </div>
     );
 });

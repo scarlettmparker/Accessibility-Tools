@@ -35,8 +35,13 @@ async function getWiktionaryData(word: string): Promise<string | undefined> {
 
 // search bar to get wiktionary data
 const SearchBar: React.FC<SearchBarProps> = ({ setProcessedWiktionaryData }) => {
-    const [inputWord, setInputWord] = useState<string>('');
+    const [inputWord, setInputWord] = useState<string>(() => localStorage.getItem('inputWord') || '');
     const { wiktionaryData, fetchData } = useWiktionaryData(inputWord);
+
+    // save search input
+    useEffect(() => {
+        localStorage.setItem('inputWord', inputWord);
+    }, [inputWord]);
 
     // process the wiktionary data when the input word is set
     useEffect(() => {
@@ -53,7 +58,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ setProcessedWiktionaryData }) => 
     return (
         <div className="searchBarWrapper">
             <input type="text" placeholder="Search word..." className="dictionarySearch" value={inputWord} onChange={(e) => setInputWord(e.target.value)} />
-            <button onClick={handleSearch} className="extButton">Search</button>
+            <button onClick={handleSearch} className="extButton wiktionaryButton">Search</button>
         </div>
     );
 };
@@ -62,18 +67,36 @@ const SearchBar: React.FC<SearchBarProps> = ({ setProcessedWiktionaryData }) => 
 const WordLookup: React.FC = React.memo(() => {
     const [processedWiktionaryData, setProcessedWiktionaryData] = useState<Record<string, ParagraphData>>({});
 
+    // load data from localStorage on component mount
+    useEffect(() => {
+        const savedData = localStorage.getItem('wiktionaryData');
+        if (savedData) {
+            setProcessedWiktionaryData(JSON.parse(savedData));
+        }
+    }, []);
+
+    // save data to localStorage whenever processedWiktionaryData changes
+    useEffect(() => {
+        if (Object.keys(processedWiktionaryData).length > 0) {
+            localStorage.setItem('wiktionaryData', JSON.stringify(processedWiktionaryData));
+        }
+    }, [processedWiktionaryData]);
+
     return (
-        <div className="wiktionaryData">
+        <div className="wordLookup">
             <SearchBar setProcessedWiktionaryData={setProcessedWiktionaryData} />
-            {Object.keys(processedWiktionaryData).map((key) => (
-                <div key={key}>
-                    <div className="posTitle">{processedWiktionaryData[key].partOfSpeech}</div>
-                    <div className="posBody" dangerouslySetInnerHTML={{ __html: processedWiktionaryData[key].text }} />
-                </div>
-            ))}
+            <div className="wiktionaryData">
+                {Object.keys(processedWiktionaryData).map((key) => (
+                    <div key={key}>
+                        <div className="posTitle">{processedWiktionaryData[key].partOfSpeech}</div>
+                        <div className="posBody" dangerouslySetInnerHTML={{ __html: processedWiktionaryData[key].text }} />
+                    </div>
+                ))}
+            </div>
         </div>
     );
 });
+
 
 function parseWiktionaryData(data: string, word: string) {
     const root = parse(data);

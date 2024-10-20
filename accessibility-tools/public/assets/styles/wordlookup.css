@@ -1,10 +1,16 @@
+.wordLookup {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 .wiktionaryData {
-    height: 95%;
+    height: 100%;
     width: 95%;
     max-width: 100%;
     font-size: 14px;
-    position: relative;
-    display: block;
     overflow: auto;
     white-space: normal;
     word-wrap: break-word;
@@ -12,18 +18,24 @@
 }
 
 .searchBarWrapper {
+    gap: 10px;
+    margin-bottom: 15px;
+    margin-top: 10px;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-    gap: 10px;
+}
+
+.wiktionaryButton {
+    padding-top: 4px;
+    padding-bottom: 6px;
 }
 
 .dictionarySearch {
-    font-size: 14px;
+    font-size: 16px;
     height: 19px;
     font-family: 'Open Sans', sans-serif;
+    padding-left: 5px;
 }
 
 .posTitle {

@@ -2,9 +2,9 @@ import React from 'react';
 import { useLoadCss } from './utils/loadcss';
 import { handleMouseEnter, handleClick, handleMouseDown, handleMouseLeave, handleMouseUp } from './utils/buttonutils';
 import { Button } from './types/types';
-import { getButtonIcon } from './utils/utils';
-import { useAltTextPosition, useMenuPosition } from './utils/utils';
-import { applyTextManipulationsToAllElements, mutationObserverCallback } from './utils/textmodify/manipulatetext';
+import { mutationObserverCallback } from './utils/mutationobserver';
+import { useAltTextPosition, useMenuPosition, getButtonIcon } from './utils/utils';
+import { applyTextManipulationsToAllElements } from './utils/textmodify/manipulatetext';
 import { textManipulations } from './consts/textmodify';
 import buttons from './utils/json/buttondata.json';
 import TextModify from './menus/textmodify';
@@ -76,22 +76,25 @@ const MenuComponent: React.FC<{
         <div className="toolbarParent">
             <ButtonWithAltText button={button} index={index + startIndex} startIndex={startIndex} className={className}
                 numOpenMenus={numOpenMenus} setNumOpenMenus={setNumOpenMenus} menuRef={menuRef} buttonMenuRef={buttonMenuRef} />
-            {numOpenMenus[startIndex + index] === 1 && (
-                <div className="buttonMenu" ref={menuRef}>
-                    {BUTTON_MENUS[startIndex + index] && (() => {
-                        const MenuComponent = BUTTON_MENUS[startIndex + index];
-                        return MenuComponent ? <MenuComponent /> : null;
-                    })()}
-                </div>
-            )}
+            <div 
+                className="buttonMenu" 
+                ref={menuRef} 
+                style={{ display: numOpenMenus[startIndex + index] === 1 ? 'block' : 'none' }}
+            >
+                {BUTTON_MENUS[startIndex + index] && (() => {
+                    const MenuComponent = BUTTON_MENUS[startIndex + index];
+                    return MenuComponent ? <MenuComponent /> : null;
+                })()}
+            </div>
         </div>
-    )
+    );
 }
 
 export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
     const [numOpenMenus, setNumOpenMenus] = useState(Array(buttons.length - 1).fill(0));
     const leftButtonRef = useRef<HTMLDivElement>(null);
     const rightButtonRef = useRef<HTMLDivElement>(null);
+    const savedModifications = localStorage.getItem('savedTextModifications');
 
     const observer = new MutationObserver(mutationObserverCallback);
 
@@ -104,7 +107,6 @@ export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
 
     // start observing the document for added nodes
     useEffect(() => {
-        const savedModifications = localStorage.getItem('savedTextModifications');
         if (savedModifications) {
             const savedTextModifications = JSON.parse(savedModifications);
             Object.keys(textManipulations).forEach((key, index) => {
@@ -126,6 +128,7 @@ export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
     useLoadCss(shadowRoot, 'toolbar.css');
     useLoadCss(shadowRoot, 'wordlookup.css');
     useLoadCss(shadowRoot, 'textmodify.css');
+    useLoadCss(shadowRoot, 'translate.css');
 
     let emptyTextModifications: Record<string, { negative: number, positive: number }> = {
         "size": { negative: 0, positive: 0 },

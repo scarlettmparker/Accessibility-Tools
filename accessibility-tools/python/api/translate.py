@@ -8,10 +8,13 @@ def post(self, data):
     raw_texts = data.get('data', [])
     language = data.get('language', '')
     
+    print(data)
+    
     # initialise google translator
     translator = Translator()
     translated_text = translate(raw_texts, language, translator)
     handle_post_request(self, {'translated_text': translated_text})
+    print("translations complete")
 
 
 def translate(translate_data, language, translator):
