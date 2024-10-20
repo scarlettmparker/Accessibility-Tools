@@ -16,7 +16,7 @@ declare module "wxt/browser" {
     | "/assets/images/buttons/9.png"
     | "/assets/styles/textmodify.css"
     | "/assets/styles/toolbar.css"
-    | "/assets/styles/translate.css"
+    | "/assets/styles/translate_theme.css"
     | "/assets/styles/wordlookup.css"
     | "/background.js"
     | "/content-scripts/content.js"

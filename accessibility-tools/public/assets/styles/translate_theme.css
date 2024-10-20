@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
-.translate {
+.translate, .theme {
     height: 100%;
     width: 100%;
     display: flex;
@@ -19,7 +19,7 @@
     font-family: 'Open Sans', sans-serif;
 }
 
-.translateSelectMenu {
+.translateSelectMenu, .themeSelectMenu {
     height: 87%;
     width: 100%;
     margin-top: 10px;
@@ -30,7 +30,7 @@
     overflow-x: hidden;
 }
 
-.languageButton {
+.languageButton, .themeButton {
     width: 85%;
     margin-bottom: 10px;
     padding-bottom: 5px;

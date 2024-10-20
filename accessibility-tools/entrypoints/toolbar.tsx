@@ -10,6 +10,7 @@ import buttons from './utils/json/buttondata.json';
 import TextModify from './menus/textmodify';
 import WordLookup from './menus/wordlookup';
 import Translate from './menus/translate';
+import Theme from './menus/theme';
 
 interface ToolbarModalProps {
     shadowRoot: ShadowRoot;
@@ -19,6 +20,7 @@ const BUTTON_SIZE = 58;
 
 const BUTTON_MENUS: { [key: number]: React.FC | undefined } = {
     1: TextModify,
+    2: Theme,
     3: WordLookup,
     4: Translate
 }
@@ -128,7 +130,7 @@ export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
     useLoadCss(shadowRoot, 'toolbar.css');
     useLoadCss(shadowRoot, 'wordlookup.css');
     useLoadCss(shadowRoot, 'textmodify.css');
-    useLoadCss(shadowRoot, 'translate.css');
+    useLoadCss(shadowRoot, 'translate_theme.css');
 
     let emptyTextModifications: Record<string, { negative: number, positive: number }> = {
         "size": { negative: 0, positive: 0 },
