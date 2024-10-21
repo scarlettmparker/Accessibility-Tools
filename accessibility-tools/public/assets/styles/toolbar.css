@@ -74,23 +74,39 @@
     align-items: center;
     justify-content: center;
     font-family: 'Open Sans', sans-serif;
+    font-weight: normal;
     background-color: #252525;
     color: #fff;
     white-space: nowrap;
 }
 
-.buttonMenu {
-    height: 345px;
-    width: 300px;
-    margin-top: -412px;
+.buttonMenu, .playButtonMenu, .magnifyButtonMenu {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     z-index: -1;
+    width: 300px;
     content: '';
     position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Open Sans', sans-serif;
+    font-weight: normal;
+    color: black;
     background-color: white;
     white-space: nowrap;
+}
+
+.buttonMenu {
+    margin-top: -412px;
+    height: 345px;
+}
+
+.playButtonMenu {
+    margin-top: -127px;
+    height: 60px;
+}
+
+.magnifyButtonMenu {
+    margin-top: -217px;
+    height: 150px;
 }

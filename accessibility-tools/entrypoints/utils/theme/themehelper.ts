@@ -69,7 +69,7 @@ const applyDarkTheme = (element: HTMLElement, themeHSL: HSL, originalHSL: HSL, b
     if (backgroundColor === "rgba(0, 0, 0, 0)") return;
     element.style.backgroundColor = backgroundColor.startsWith('rgba(0, 0, 0, 0')
         ? `hsl(${themeHSL.h}, ${originalHSL.s}%, 35%)`
-        : `hsl(0, 0%, ${100 - originalHSL.l * (100 - 13.5) / 100 + 20.5}%)`;
+        : `hsl(0, 0%, ${100 - originalHSL.l * (100 - 13.5) / 100 + 10.5}%)`;
 };
 
 const changeElementStyles = (element: HTMLElement, themeHSL: HSL, isDarkTheme: boolean): void => {

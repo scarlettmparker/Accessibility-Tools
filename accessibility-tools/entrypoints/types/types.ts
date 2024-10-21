@@ -5,6 +5,7 @@ export type Button = {
     color?: string;
     hover_color: string;
     click_color: string;
+    class_name?: string;
 }
 
 // type for paragraph data

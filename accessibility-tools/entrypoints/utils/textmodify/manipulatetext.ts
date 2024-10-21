@@ -39,8 +39,12 @@ export function applyTextManipulationsToAllElements(manipulation: number, type?:
 
 const applyTextManipulations = (element: HTMLElement, manipulation: number, type: number, savedModification?: number) => {
     // change font size
+    if (!element.style.fontSize) {
+        element.style.fontSize = '16px';
+    }
     if (manipulation === 0) {
         if (type == 1) {
+            
             element.style.fontSize = `${parseFloat(element.style.fontSize) * textManipulations["size"]}px`;
         } else {
             element.style.fontSize = `${parseFloat(element.style.fontSize) / textManipulations["size"]}px`;

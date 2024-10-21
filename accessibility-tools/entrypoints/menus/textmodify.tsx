@@ -27,7 +27,7 @@ const ModifyWrapper: React.FC<{ manipulation: number, label: string, decreaseAlt
 };
 
 // button with alt text component for the toolbar
-const ButtonWithAltText: React.FC<{ className: string, altText: string, innerText: string, onClick: () => void }> = ({ className, altText, innerText, onClick }) => {
+export const ButtonWithAltText: React.FC<{ className: string, altText: string, innerText: string, onClick: () => void }> = ({ className, altText, innerText, onClick }) => {
     // react states for the alt text and button
     const [showAltText, setShowAltText] = useState(false);
     const altRef = useRef<HTMLDivElement>(null);

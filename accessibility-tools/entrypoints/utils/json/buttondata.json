@@ -4,7 +4,8 @@
         "name": "Play",
         "color": "#411D81",
         "hover_color": "#2F155E",
-        "click_color": "#33394b"
+        "click_color": "#33394b",
+        "class_name": "playButtonMenu"
     },
     {
         "id": 1,
@@ -39,7 +40,8 @@
         "name": "Magnify",
         "color": "#0C767F",
         "hover_color": "#095359",
-        "click_color": "#33394b"
+        "click_color": "#33394b",
+        "class_name": "magnifyButtonMenu"
     },
     {
         "id": 6,

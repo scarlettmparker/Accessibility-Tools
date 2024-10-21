@@ -7,10 +7,13 @@ import { useAltTextPosition, useMenuPosition, getButtonIcon } from './utils/util
 import { applyTextManipulationsToAllElements } from './utils/textmodify/manipulatetext';
 import { textManipulations } from './consts/textmodify';
 import buttons from './utils/json/buttondata.json';
+
+import TTS from './menus/tts';
 import TextModify from './menus/textmodify';
+import Theme from './menus/theme';
 import WordLookup from './menus/wordlookup';
 import Translate from './menus/translate';
-import Theme from './menus/theme';
+import Magnify from './menus/magnify';
 
 interface ToolbarModalProps {
     shadowRoot: ShadowRoot;
@@ -19,10 +22,12 @@ interface ToolbarModalProps {
 const BUTTON_SIZE = 58;
 
 const BUTTON_MENUS: { [key: number]: React.FC | undefined } = {
+    0: TTS,
     1: TextModify,
     2: Theme,
     3: WordLookup,
-    4: Translate
+    4: Translate,
+    5: Magnify
 }
 
 // render the buttons using the button data
@@ -78,11 +83,7 @@ const MenuComponent: React.FC<{
         <div className="toolbarParent">
             <ButtonWithAltText button={button} index={index + startIndex} startIndex={startIndex} className={className}
                 numOpenMenus={numOpenMenus} setNumOpenMenus={setNumOpenMenus} menuRef={menuRef} buttonMenuRef={buttonMenuRef} />
-            <div 
-                className="buttonMenu" 
-                ref={menuRef} 
-                style={{ display: numOpenMenus[startIndex + index] === 1 ? 'block' : 'none' }}
-            >
+            <div className={button.class_name || "buttonMenu"} ref={menuRef} style={{ display: numOpenMenus[startIndex + index] === 1 ? 'block' : 'none' }}>
                 {BUTTON_MENUS[startIndex + index] && (() => {
                     const MenuComponent = BUTTON_MENUS[startIndex + index];
                     return MenuComponent ? <MenuComponent /> : null;
@@ -128,9 +129,11 @@ export const ToolbarModal: React.FC<ToolbarModalProps> = ({ shadowRoot }) => {
 
     // load the css files for the toolbar
     useLoadCss(shadowRoot, 'toolbar.css');
-    useLoadCss(shadowRoot, 'wordlookup.css');
+    useLoadCss(shadowRoot, 'tts.css');
     useLoadCss(shadowRoot, 'textmodify.css');
+    useLoadCss(shadowRoot, 'wordlookup.css');
     useLoadCss(shadowRoot, 'translate_theme.css');
+    useLoadCss(shadowRoot, 'magnify.css');
 
     let emptyTextModifications: Record<string, { negative: number, positive: number }> = {
         "size": { negative: 0, positive: 0 },

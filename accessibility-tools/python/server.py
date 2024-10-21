@@ -14,6 +14,8 @@ HOST = "localhost"
 main_dir = os.path.dirname(os.path.abspath(__file__))
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
+    TIMEOUT = 10 # timeout timer for requests
+
     def _set_headers(self):
         set_cors_headers(self)
 
@@ -37,21 +39,38 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
         module = self.load_api_module(self.path)
         
         if module:
-            # determine the method (get, post, put, delete)
-            method_func = getattr(module, method.lower(), None)
-            if method_func:
-                # for POST/PUT parse the incoming data
-                if method.lower() in ['post', 'put']:
-                    content_length = int(self.headers['Content-Length'])
-                    post_data = self.rfile.read(content_length)
-                    data = json.loads(post_data)
-                    method_func(self, data)
+            # start a timeout timer
+            timeout_event = threading.Event()
+            timer = threading.Timer(self.TIMEOUT, self.request_timeout, [timeout_event])
+            timer.start()
+
+            try:
+                # determine the method (get, post, put, delete)
+                method_func = getattr(module, method.lower(), None)
+                if method_func:
+                    # for POST/PUT parse the incoming data
+                    if method.lower() in ['post', 'put']:
+                        content_length = int(self.headers['Content-Length'])
+                        post_data = self.rfile.read(content_length)
+                        data = json.loads(post_data)
+                        method_func(self, data)
+                    else:
+                        method_func(self)
+
+                    # if request finishes in time cancel the timer
+                    timeout_event.set()
                 else:
-                    method_func(self)
-            else:
-                self.send_error(405, f'Method {method.upper()} not allowed for {self.path}')
+                    self.send_error(405, f'Method {method.upper()} not allowed for {self.path}')
+            finally:
+                timer.cancel()
         else:
             self.send_error(404, 'Endpoint Not Found')
+
+    def request_timeout(self, timeout_event):
+        """Handle request timeout and send a timeout error"""
+        if not timeout_event.is_set():
+            self.send_error(408, 'Request Timeout')
+            self.finish()
 
     # OPTIONS
     def do_OPTIONS(self):
