@@ -49,6 +49,7 @@
   padding: var(--md);
   box-shadow: var(--shadow-md);
   border-radius: var(--md);
+  /* We want everything on top */
   z-index: 2147483646;
 }
 

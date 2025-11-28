@@ -1,7 +1,7 @@
 import globalStyles from "./styles/globals.css?inline";
 import buttonStyles from "./styles/button.css?inline";
 
-import Toolbar from "@/components/toolbar";
+import Toolbar from "@/_components/toolbar";
 import { createRoot } from "react-dom/client";
 
 const host = document.createElement("span");

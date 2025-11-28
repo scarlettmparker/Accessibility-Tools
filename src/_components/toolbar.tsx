@@ -1,8 +1,8 @@
-import Button from "@/_components/button";
+import Button from "@/components/button";
 import menu, { MenuEntry } from "@/content/menu";
-import MenuItem from "./menu-item";
+import MenuItem from "../_components/menu-item";
 import { useState } from "react";
-import Slot from "@/_components/slot";
+import Slot from "@/components/slot";
 
 /**
  * Main entry component for the toolbar.
