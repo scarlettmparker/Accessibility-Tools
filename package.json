@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "jest --maxWorkers=50%"
   },
   "dependencies": {
     "react": "^19.1.0",

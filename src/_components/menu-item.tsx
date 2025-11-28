@@ -4,15 +4,23 @@ type MenuItemProps = {
   /**
    * Current menu entry.
    */
-  menu: [string, MenuEntry];
+  menuItem: [string, MenuEntry];
 };
 
 /**
  * A single menu item. Takes a menu entry and constructs its layout depending on the menu item.
  */
 const MenuItem = (props: MenuItemProps) => {
-  const { menu } = props;
-  return <div className="menu-item">{menu[0]}</div>;
+  const { menuItem } = props;
+  const [key, menuEntry] = menuItem;
+
+  if (!menuEntry.component) {
+    console.log("NO COMPONENT FOUND for key:", key);
+    return null;
+  }
+
+  const Component = menuEntry.component;
+  return <Component />;
 };
 
 export default MenuItem;

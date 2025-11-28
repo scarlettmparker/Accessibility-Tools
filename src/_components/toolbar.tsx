@@ -26,7 +26,7 @@ const Toolbar = () => {
     <>
       {currentMenu && (
         <Slot className="menu-item-wrapper">
-          <MenuItem menu={currentMenu} />
+          <MenuItem menuItem={currentMenu} />
         </Slot>
       )}
       <Slot className="toolbar-wrapper">

@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
 :host {
+  all: initial;
   /* text colors */
   --text: #14141B;
   --primary: #D90429;
@@ -43,6 +46,13 @@
   width: 100vw;
   height: 100vh;
   color: var(--text);
+  font-family: 'Open Sans', sans-serif
+}
+
+
+* {
+  font-family: inherit;
+  color: inherit;
 }
 
 .slot {
@@ -54,7 +64,7 @@
 }
 
 .toolbar-wrapper {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -71,15 +81,11 @@
 }
 
 .menu-item-wrapper {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   max-width: 300px;
   height: calc(100vh - var(--md) * 2);
   background: white;
-}
-
-.menu-item {
-  
 }
