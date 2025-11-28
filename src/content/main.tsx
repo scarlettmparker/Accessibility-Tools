@@ -1,5 +1,6 @@
 import globalStyles from "./styles/globals.css?inline";
 import buttonStyles from "./styles/button.css?inline";
+import "../i18n";
 
 import Toolbar from "@/_components/toolbar";
 import { createRoot } from "react-dom/client";

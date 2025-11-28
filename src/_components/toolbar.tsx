@@ -3,11 +3,13 @@ import menu, { MenuEntry } from "@/content/menu";
 import MenuItem from "../_components/menu-item";
 import { useState } from "react";
 import Slot from "@/components/slot";
+import { useTranslation } from "react-i18next";
 
 /**
  * Main entry component for the toolbar.
  */
 const Toolbar = () => {
+  const { t } = useTranslation();
   const menuItems = Object.entries(menu);
   const [currentMenuKey, setCurrentMenuKey] = useState<string | null>(null);
 
