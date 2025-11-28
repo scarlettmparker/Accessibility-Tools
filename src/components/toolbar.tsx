@@ -1,0 +1,51 @@
+import Button from "@/_components/button";
+import menu, { MenuEntry } from "@/content/menu";
+import MenuItem from "./menu-item";
+import { useState } from "react";
+import Slot from "@/_components/slot";
+
+/**
+ * Main entry component for the toolbar.
+ */
+const Toolbar = () => {
+  const menuItems = Object.entries(menu);
+  const [currentMenuKey, setCurrentMenuKey] = useState<string | null>(null);
+
+  /**
+   * Handle menu select, deselect current menu if clicked twice.
+   */
+  const handleMenuSelect = (menuItemKey: string) => {
+    setCurrentMenuKey((prev) => (prev === menuItemKey ? null : menuItemKey));
+  };
+
+  const currentMenu = currentMenuKey
+    ? ([currentMenuKey, menu[currentMenuKey]] as [string, MenuEntry])
+    : null;
+
+  return (
+    <>
+      {currentMenu && (
+        <Slot className="menu-item-wrapper">
+          <MenuItem menu={currentMenu} />
+        </Slot>
+      )}
+      <Slot className="toolbar-wrapper">
+        <nav className="toolbar">
+          {menuItems.map(([key], idx) => (
+            // TODO: use i18n and aria-labels
+            <Button
+              key={idx}
+              variant="secondary"
+              title={key}
+              onClick={() => handleMenuSelect(key)}
+            >
+              {key}
+            </Button>
+          ))}
+        </nav>
+      </Slot>
+    </>
+  );
+};
+
+export default Toolbar;
