@@ -15,20 +15,22 @@ describe("Menu", () => {
     expect(Object.keys(menu)).toEqual(expectedKeys);
   });
 
-  it("text menu has component", () => {
-    expect(menu.text.component).toBeDefined();
-  });
-
-  it("other menus do not have component", () => {
-    const menusWithoutComponent = [
+  it("menus with components", () => {
+    const menusWithComponent = [
       "text-to-speech",
+      "text",
       "theme",
       "dictionary",
       "translate",
       "magnify",
-      "manual",
-      "settings",
     ];
+    menusWithComponent.forEach((key) => {
+      expect(menu[key].component).toBeDefined();
+    });
+  });
+
+  it("menus without components", () => {
+    const menusWithoutComponent = ["manual", "settings"];
     menusWithoutComponent.forEach((key) => {
       expect(menu[key].component).toBeUndefined();
     });
