@@ -1,1 +1,17 @@
-{}
+{
+  "toolbar": {
+    "menu": {
+      "title": {
+        "prefix": "Click to open",
+        "text-to-speech": "Text to Speech",
+        "text": "Text",
+        "theme": "Theme",
+        "dictionary": "Dictionary",
+        "translate": "Translate",
+        "magnify": "Magnify",
+        "manual": "Manual",
+        "settings": "Settings"
+      }
+    }
+  }
+}

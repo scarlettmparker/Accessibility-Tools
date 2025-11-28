@@ -28,7 +28,7 @@ const Toolbar = () => {
     <>
       {currentMenu && (
         <Slot className="menu-item-wrapper">
-          <MenuItem menuItem={currentMenu} />
+          <MenuItem menuItem={currentMenu} t={t} />
         </Slot>
       )}
       <Slot className="toolbar-wrapper">
@@ -38,10 +38,13 @@ const Toolbar = () => {
             <Button
               key={idx}
               variant="secondary"
-              title={key}
+              title={`${t("toolbar.menu.title.prefix")} ${t(
+                `toolbar.menu.title.${key}`
+              )}`}
+              aria-label={t(`toolbar.menu.title.${key}`)}
               onClick={() => handleMenuSelect(key)}
             >
-              {key}
+              {t(`toolbar.menu.title.${key}`)}
             </Button>
           ))}
         </nav>

@@ -46,12 +46,15 @@
   width: 100vw;
   height: 100vh;
   color: var(--text);
-  font-family: 'Open Sans', sans-serif
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
 }
 
 
 * {
+  /* Any styles that are overridden in :host need to be inherited here */
   font-family: inherit;
+  font-size: inherit;
   color: inherit;
 }
 

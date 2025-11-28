@@ -1,4 +1,12 @@
 import Text from "@/_components/menus/text";
+import { TFunction } from "i18next";
+
+type ComponentProps = {
+  /**
+   * i18n translation function.
+   */
+  t: TFunction;
+};
 
 export type MenuEntry = {
   /**
@@ -9,7 +17,7 @@ export type MenuEntry = {
   /**
    * Menu component to render.
    */
-  component?: React.ComponentType;
+  component?: React.ComponentType<ComponentProps>;
 };
 
 const menu: Record<string, MenuEntry> = {
