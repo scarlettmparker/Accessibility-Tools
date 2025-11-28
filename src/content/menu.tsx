@@ -1,4 +1,9 @@
 import Text from "@/_components/menus/text";
+import TextToSpeech from "@/_components/menus/text-to-speech";
+import Theme from "@/_components/menus/theme";
+import Dictionary from "@/_components/menus/dictionary";
+import Translate from "@/_components/menus/translate";
+import Magnify from "@/_components/menus/magnify";
 import { TFunction } from "i18next";
 
 type ComponentProps = {
@@ -23,6 +28,7 @@ export type MenuEntry = {
 const menu: Record<string, MenuEntry> = {
   "text-to-speech": {
     icon: "text-to-speech",
+    component: TextToSpeech,
   },
   text: {
     icon: "text",
@@ -30,15 +36,19 @@ const menu: Record<string, MenuEntry> = {
   },
   theme: {
     icon: "theme",
+    component: Theme,
   },
   dictionary: {
     icon: "dictionary",
+    component: Dictionary,
   },
   translate: {
     icon: "translate",
+    component: Translate,
   },
   magnify: {
     icon: "magnify",
+    component: Magnify,
   },
   manual: {
     icon: "manual",

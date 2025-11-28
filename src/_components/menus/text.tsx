@@ -1,5 +1,5 @@
 const Text = () => {
-  return <>This is text!</>;
+  return <></>;
 };
 
 export default Text;
