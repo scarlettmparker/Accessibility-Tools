@@ -104,6 +104,16 @@ export function resetForTests(): void {
   observer = null;
 }
 
+export function resetFontSize(): void {
+  currentMultiplier = 1;
+  baseFontSizes.clear();
+  // Remove font-size styles from all elements
+  const allElements = document.querySelectorAll("*");
+  allElements.forEach((el) => {
+    (el as HTMLElement).style.removeProperty("font-size");
+  });
+}
+
 export function adjustFontSize(action: "increase" | "decrease"): void {
   if (action === "increase") {
     currentMultiplier *= 1.1;

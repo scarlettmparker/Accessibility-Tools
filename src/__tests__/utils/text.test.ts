@@ -1,9 +1,15 @@
-import { adjustFontSize, resetForTests, observer } from "@/utils/text";
+import {
+  adjustFontSize,
+  resetForTests,
+  resetFontSize,
+  observer,
+} from "@/utils/text";
 
 describe("text utils", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
     resetForTests();
+    jest.spyOn(console, "log").mockImplementation(() => {});
   });
 
   describe("adjustFontSize", () => {
@@ -97,6 +103,21 @@ describe("text utils", () => {
 
       adjustFontSize("increase");
       expect(parseFloat(div.style.fontSize)).toBeCloseTo(19.36); // 16 * 1.1 * 1.1
+    });
+  });
+
+  describe("resetFontSize", () => {
+    it("should reset font size multiplier and clear baseFontSizes", () => {
+      const div = document.createElement("div");
+      div.textContent = "Test";
+      div.style.fontSize = "16px";
+      document.body.appendChild(div);
+
+      adjustFontSize("increase");
+      expect(div.style.fontSize).toBe("17.6px");
+
+      resetFontSize();
+      expect(div.style.fontSize).toBe("");
     });
   });
 });

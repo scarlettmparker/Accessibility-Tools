@@ -4,6 +4,8 @@
   all: initial;
   /* text colors */
   --text: #14141B;
+  --muted: #7F7F7F;
+  --muted-light: #BFBFBF;
   --primary: #D90429;
   --primary-hover: #FB3758; /* imperial red */
   --primary-active: #A0031D;
@@ -11,6 +13,8 @@
   --secondary-hover: #F5F5F5;
   --accent: #FFDAAD; /* sunset */
   --accent-hover: #FFE3C2;
+  --accent-dark: #F58700; /* tiger orange */
+  --accent-dark-hover: #FFA333;
   --tertiary: #D03991; /* mulberry */
 
   /* font sizes */
@@ -28,20 +32,24 @@
   --sm: 3px;
   --md: 5px;
   --lg: 8px;
+  --xl: 16px;
 
   /* transitions */
   --fast: 0.2s;
+  --very-slow: 2s;
 
   /* shadows */
-  --shadow-sm: 
+  --shadow-soft:
     0 1px 2px rgba(0, 0, 0, 0.03),
     0 2px 4px rgba(0, 0, 0, 0.05),
     0 4px 8px rgba(0, 0, 0, 0.08);
 
-  --shadow-md:
+  --shadow-medium:
     0 2px 4px rgba(0, 0, 0, 0.05),
     0 4px 8px rgba(0, 0, 0, 0.08),
     0 6px 12px rgba(0, 0, 0, 0.11);
+
+  --focus-shadow: 0 0 0 2px rgba(217, 4, 41, 0.2);
 
   width: 100vw;
   height: 100vh;

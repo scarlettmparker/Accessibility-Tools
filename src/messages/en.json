@@ -15,6 +15,20 @@
     }
   },
   "text": {
-    "font-size": "Font Size"
+    "font-size": "Font Size",
+    "decrease-font-size": {
+      "aria": "decrease font size",
+      "title": "click to decrease font size by 10%"
+    },
+    "increase-font-size": {
+      "aria": "increase font size",
+      "title": "click to increase font size by 10%"
+    },
+    "reset-font-size": {
+      "aria": "reset font size",
+      "title": "click to reset font size",
+      "text": "Reset"
+    },
+    "font-face": "Font Face"
   }
 }

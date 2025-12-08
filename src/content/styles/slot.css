@@ -1,7 +1,7 @@
 
 .slot {
   padding: var(--md);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-medium);
   border-radius: var(--md);
   /* We want everything on top */
   z-index: 2147483646;
