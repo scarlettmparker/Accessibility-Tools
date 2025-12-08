@@ -1,0 +1,26 @@
+.toolbar-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.toolbar {
+  display: flex;
+  gap: var(--md);
+  width: fit-content;
+  text-wrap: nowrap;
+}
+
+.menu-item-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 300px;
+  height: calc(100vh - var(--md) * 2);
+  background: white;
+}

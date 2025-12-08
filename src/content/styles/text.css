@@ -1,0 +1,11 @@
+.text-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lg);
+}
+
+.text-section {
+  display: flex;
+  gap: var(--lg);
+  align-items: center;
+}
