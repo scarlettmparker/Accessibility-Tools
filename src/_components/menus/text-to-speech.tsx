@@ -1,3 +1,6 @@
+/**
+ * Text-to-speech menu panel.
+ */
 const TextToSpeech = () => {
   return <></>;
 };

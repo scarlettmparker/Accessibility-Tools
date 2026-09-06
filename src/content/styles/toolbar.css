@@ -3,9 +3,7 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  background: white;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+  z-index: 2147483646;
 }
 
 .toolbar {
@@ -22,5 +20,5 @@
   width: 100%;
   max-width: 300px;
   height: calc(100vh - var(--md) * 2);
-  background: white;
+  z-index: 2147483646;
 }

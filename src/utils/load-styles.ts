@@ -1,14 +1,20 @@
+import libraryStyles from "@sun/components/style.css?raw";
+
 /**
- * Loads all CSS files dynamically from the styles folder and adds them to a style tag.
- * @returns Promise resolving to the style element containing all combined CSS.
+ * Loads the Sun component library styles plus all local content styles
+ * into a single style element for the shadow root.
  */
 export async function loadAllStyles(): Promise<HTMLStyleElement> {
-  const cssModules = import.meta.glob("../content/styles/*.css", { as: "raw" });
+  const cssModules = import.meta.glob("../content/styles/*.css", {
+    query: "?raw",
+    import: "default",
+  });
   const cssPromises = Object.values(cssModules).map(
-    async (loader) => await loader()
+    async (loader) => await loader(),
   );
   const cssContents = await Promise.all(cssPromises);
-  const combinedCSS = cssContents.join("\n");
+  const scopedLibraryStyles = libraryStyles.replace(/:root/g, ":host");
+  const combinedCSS = [scopedLibraryStyles, ...cssContents].join("\n");
 
   const style = document.createElement("style");
   style.textContent = combinedCSS;

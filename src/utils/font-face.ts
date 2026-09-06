@@ -1,5 +1,8 @@
 const initialFontFace = getComputedStyle(document.body).fontFamily;
 
+/**
+ * Font faces offered by the text menu.
+ */
 export const fontFaces = [
   { name: "Default", value: initialFontFace },
   { name: "Arial", value: "Arial, sans-serif" },
@@ -17,11 +20,17 @@ export const fontFaces = [
 
 let currentFontFace = "";
 
+/**
+ * Applies a font face to the page body.
+ */
 export function setFontFace(fontValue: string): void {
   currentFontFace = fontValue;
   document.body.style.fontFamily = fontValue;
 }
 
+/**
+ * Returns the currently selected font face.
+ */
 export function getCurrentFontFace(): string {
   return currentFontFace;
 }

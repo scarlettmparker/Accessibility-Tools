@@ -1,3 +1,6 @@
+/**
+ * Translation menu panel.
+ */
 const Translate = () => {
   return <></>;
 };

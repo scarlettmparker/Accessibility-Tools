@@ -1,3 +1,6 @@
+/**
+ * Magnifier menu panel.
+ */
 const Magnify = () => {
   return <></>;
 };

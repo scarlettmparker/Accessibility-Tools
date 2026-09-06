@@ -36,7 +36,11 @@
 
   /* transitions */
   --fast: 0.2s;
+  --medium: 0.3s;
   --very-slow: 2s;
+
+  /* opacities */
+  --visible: 0.6;
 
   /* shadows */
   --shadow-soft:

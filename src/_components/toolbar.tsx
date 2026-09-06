@@ -1,8 +1,7 @@
-import Button from "@/components/button";
+import { Button, Card, CardBody } from "@sun/components";
 import menu, { MenuEntry } from "@/content/menu";
 import MenuItem from "../_components/menu-item";
 import { useState } from "react";
-import Slot from "@/components/slot";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -12,7 +11,6 @@ const Toolbar = () => {
   const { t } = useTranslation();
   const menuItems = Object.entries(menu);
   const [currentMenuKey, setCurrentMenuKey] = useState<string | null>(null);
-
   /**
    * Handle menu select, deselect current menu if clicked twice.
    */
@@ -27,19 +25,22 @@ const Toolbar = () => {
   return (
     <>
       {currentMenu && (
-        <Slot className="menu-item-wrapper">
-          <MenuItem menuItem={currentMenu} t={t} />
-        </Slot>
+        <div className="menu-item-wrapper">
+          <Card>
+            <CardBody>
+              <MenuItem menuItem={currentMenu} t={t} />
+            </CardBody>
+          </Card>
+        </div>
       )}
-      <Slot className="toolbar-wrapper">
+      <div className="toolbar-wrapper">
         <nav className="toolbar">
-          {menuItems.map(([key], idx) => (
-            // TODO: use i18n and aria-labels
+          {menuItems.map(([key]) => (
             <Button
-              key={idx}
+              key={key}
               variant="secondary"
               title={`${t("toolbar.menu.title.prefix")} ${t(
-                `toolbar.menu.title.${key}`
+                `toolbar.menu.title.${key}`,
               )}`}
               aria-label={t(`toolbar.menu.title.${key}`)}
               onClick={() => handleMenuSelect(key)}
@@ -48,7 +49,7 @@ const Toolbar = () => {
             </Button>
           ))}
         </nav>
-      </Slot>
+      </div>
     </>
   );
 };

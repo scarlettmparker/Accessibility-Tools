@@ -1,14 +1,19 @@
-import Button from "@/components/button";
-import Label from "@/components/label";
+import { Button, Label, Select, SelectOption } from "@sun/components";
 import { adjustFontSize, resetFontSize } from "@/utils/text";
 import { fontFaces, setFontFace, getCurrentFontFace } from "@/utils/font-face";
 import { TFunction } from "i18next";
 import { useState, useEffect } from "react";
 
 type TextProps = {
+  /**
+   * i18n translation function.
+   */
   t: TFunction;
 };
 
+/**
+ * Text adjustment menu panel.
+ */
 const Text = (props: TextProps) => {
   const { t } = props;
   const [selectedFont, setSelectedFont] = useState(getCurrentFontFace() || "");
@@ -48,20 +53,20 @@ const Text = (props: TextProps) => {
         </Button>
       </section>
       <section className="text-section">
-        <Label htmlFor="font-face-select">{t("text.font-face")}</Label>
-        <select
-          id="font-face-select"
+        <Label>{t("text.font-face")}</Label>
+        <Select
           value={selectedFont}
           onChange={(e) => setSelectedFont(e.target.value)}
           aria-label={t("text.font-face")}
+          data-testid="font-face-select"
           style={{ marginLeft: "auto" }}
         >
           {fontFaces.map((font) => (
-            <option key={font.value} value={font.value}>
+            <SelectOption key={font.value} value={font.value}>
               {font.name}
-            </option>
+            </SelectOption>
           ))}
-        </select>
+        </Select>
       </section>
     </main>
   );

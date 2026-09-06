@@ -1,3 +1,6 @@
+/**
+ * Dictionary menu panel.
+ */
 const Dictionary = () => {
   return <></>;
 };
