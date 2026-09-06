@@ -2,6 +2,14 @@
  * Browser-safe GraphQL client for the Spring Boot back-end.
  */
 import { parseThemes, type ResolvedTheme } from "@sun/utils/property-set";
+import { print, type DocumentNode } from "graphql";
+import {
+  DefineWordDocument,
+  type DefineWordQuery,
+  type DefineWordQueryVariables,
+  WordDictionary,
+  type WordScope,
+} from "@/generated/graphql";
 
 type ApiResponse<T> = {
   /**
@@ -48,14 +56,15 @@ type PropertySetData = {
  * Runs a GraphQL operation against the back-end.
  */
 async function executeQuery<T>(
-  query: string,
+  query: string | DocumentNode,
   variables?: Record<string, unknown>,
 ): Promise<ApiResponse<T>> {
+  const queryText = typeof query === "string" ? query : print(query);
   const endpoint = import.meta.env.VITE_GRAPHQL_ENDPOINT;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000);
   try {
-    const body: GraphQLBody = { query, variables };
+    const body: GraphQLBody = { query: queryText, variables };
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -113,3 +122,28 @@ export async function fetchThemes(): Promise<ResolvedTheme> {
     return { current: null, all: [] };
   }
 }
+
+/**
+ * Defines a word from WordReference.
+ *
+ * @param word the headword to look up
+ * @param dictionary the dictionary to query
+ * @param scope the parts of the page to include
+ */
+export async function fetchDefineWord(
+  word: string,
+  dictionary: WordDictionary = WordDictionary.English,
+  scope: WordScope[] = [],
+): Promise<ApiResponse<DefineWordQuery>> {
+  const variables: DefineWordQueryVariables = { word, dictionary, scope };
+  const result = await executeQuery<DefineWordQuery>(DefineWordDocument, variables as Record<string, unknown>);
+  if (!result.success) {
+    return result;
+  }
+  if (!result.data?.hadesQueries?.defineWord) {
+    return { success: false, error: "No definition found" };
+  }
+  return result;
+}
+
+export { WordDictionary, type WordScope };

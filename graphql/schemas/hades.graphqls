@@ -1,0 +1,384 @@
+"""
+Predicted probability for a single CEFR level.
+"""
+type LevelProbability {
+  level: CefrLevel!
+  probability: Float!
+}
+
+"""
+A contributing complexity factor with a direction (up/down).
+"""
+type ComplexityFactor {
+  name: String!
+  value: Float!
+  direction: String!
+  weight: Float!
+}
+
+"""
+Predicted CEFR level with confidence and contributing factors.
+"""
+type TextLevelAssessment {
+  level: CefrLevel!
+  confidence: Float!
+  probabilities: [LevelProbability!]!
+  factors: [ComplexityFactor!]!
+}
+
+"""
+Which parts of a WordReference word page to include.
+"""
+enum WordScope {
+  ALL_TRANSLATIONS
+  EXAMPLES
+  COMPOUNDS
+  RELATED_WORDS
+}
+
+"""
+Which WordReference dictionary to query.
+"""
+enum WordDictionary {
+  GREEK_ENGLISH
+  ENGLISH
+}
+
+"""
+A dictionary word with its translations, compounds, and related words.
+"""
+type Word {
+  id: ID!
+  term: String!
+  wordType: String
+  entries: [WordEntry!]!
+  compounds: [WordEntry!]!
+  relatedWords: [Word!]!
+  sourceUrl: String!
+}
+
+"""
+A single dictionary entry for a headword.
+"""
+type WordEntry {
+  id: ID!
+  term: String!
+  wordType: String!
+  sense: String
+  translations: [WordTranslation!]!
+  examples: [String!]!
+  note: String
+}
+
+"""
+A translated term under a word entry.
+"""
+type WordTranslation {
+  term: String!
+  wordType: String
+  usageNotes: [String!]!
+}
+
+"""
+The website a reader text originated from.
+"""
+type ReaderSource {
+  id: String!
+  name: String!
+  url: String!
+}
+
+"""
+A foreign-language text that users annotate.
+"""
+type ReaderText {
+  id: String!
+  title: String!
+  content: String!
+  language: String!
+  level: CefrLevel!
+  ownerId: ID
+  sourceId: ID
+  status: ReaderTextStatus!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+A character range on a text.
+"""
+type ReaderPosition {
+  id: String!
+  textId: ID!
+  startOffset: Int!
+  endOffset: Int!
+}
+
+"""
+A markdown explanation a user wrote for a position.
+"""
+type ReaderAnnotation {
+  id: String!
+  positionId: ID!
+  position: ReaderPosition
+  body: String!
+  status: ReaderStatus!
+  upvotes: Int!
+  downvotes: Int!
+  netScore: Int!
+  replyCount: Int!
+  remoteObject: [String!]
+  author: RemoteUser
+  myVote: VoteValue
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+A threaded reply on an annotation.
+"""
+type ReaderComment {
+  id: String!
+  annotationId: ID!
+  parentId: ID
+  body: String!
+  status: ReaderStatus!
+  upvotes: Int!
+  downvotes: Int!
+  netScore: Int!
+  author: RemoteUser
+  myVote: VoteValue
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+Reader-specific profile for a member.
+"""
+type ReaderAccount {
+  id: String!
+  gaiaAccountId: ID!
+  discordId: String!
+  discordUsername: String
+  globalName: String
+  avatar: String
+  cefrLevel: CefrLevel
+  roles: [ReaderRole!]!
+}
+
+"""
+A learner level granted by a Discord guild role.
+"""
+type ReaderRole {
+  key: String!
+  name: String!
+  cefrLevel: CefrLevel
+}
+
+type PagedReaderTexts {
+  items: [ReaderText!]!
+  pageInfo: PageInfo!
+}
+
+type PagedReaderComments {
+  items: [ReaderComment!]!
+  pageInfo: PageInfo!
+}
+
+type PagedReaderAnnotations {
+  items: [ReaderAnnotation!]!
+  pageInfo: PageInfo!
+}
+
+"""
+A per-user private note anchored to a text range.
+"""
+type PrivateNote {
+  id: String!
+  textId: ID!
+  startOffset: Int!
+  endOffset: Int!
+  body: String!
+  visibility: PrivateNoteVisibility!
+  remoteObject: [String!]
+  author: RemoteUser
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+enum PrivateNoteVisibility {
+  PRIVATE
+  SHARED
+}
+
+type PagedPrivateNotes {
+  items: [PrivateNote!]!
+  pageInfo: PageInfo!
+}
+
+input PrivateNoteInput {
+  textId: ID!
+  startOffset: Int!
+  endOffset: Int!
+  body: String!
+}
+
+input ShareInput {
+  objectType: String!
+  objectId: ID!
+  subjectType: String!
+  subjectId: ID!
+  relation: String!
+}
+
+input ShareNotesInput {
+  textId: ID!
+  subjectIds: [ID!]
+  subjectEmails: [String!]
+}
+
+type DiscordLoginResult {
+  token: String!
+  accountId: ID!
+  readerAccountId: ID!
+  requiresReactivation: Boolean!
+}
+
+type ReaderObjectReference {
+  id: ID!
+  ownerType: String!
+  ownerId: ID!
+}
+
+enum CefrLevel {
+  A1
+  A2
+  B1
+  B2
+  C1
+  C2
+}
+enum ReaderTextStatus {
+  ACTIVE
+  ARCHIVED
+}
+enum ReaderStatus {
+  ACTIVE
+  HIDDEN
+}
+enum ReaderVoteTarget {
+  ANNOTATION
+  COMMENT
+}
+
+input ReaderTextInput {
+  title: String!
+  content: String!
+  language: String!
+  level: CefrLevel!
+  ownerId: ID
+  sourceId: ID
+}
+
+input AnnotationInput {
+  textId: ID!
+  startOffset: Int!
+  endOffset: Int!
+  body: String!
+}
+
+input CommentInput {
+  annotationId: ID!
+  parentId: ID
+  body: String!
+}
+
+input VoteInput {
+  targetType: ReaderVoteTarget!
+  targetId: ID!
+  value: VoteValue!
+}
+
+"""
+A record that the current user has viewed a text.
+"""
+type TextView {
+  textId: ID!
+  viewedAt: DateTime!
+}
+
+type PagedTextViews {
+  items: [TextView!]!
+  pageInfo: PageInfo!
+}
+
+"""
+Read operations for the reader.
+"""
+type HadesQueries {
+  text(id: ID!): ReaderText
+  source(id: ID!): ReaderSource
+  sources: [ReaderSource!]
+  texts(pagination: PaginationInput): PagedReaderTexts!
+  classifyTextLevel(text: String!): TextLevelAssessment
+  annotations(
+    textId: ID!
+    includeHidden: Boolean
+    pagination: PaginationInput
+  ): PagedReaderAnnotations!
+  annotation(id: ID!): ReaderAnnotation
+  comments(
+    annotationId: ID!
+    includeHidden: Boolean
+    pagination: PaginationInput
+  ): PagedReaderComments!
+  privateNotes(textId: ID!, pagination: PaginationInput): PagedPrivateNotes!
+  readerAccount: ReaderAccount
+  readerAccounts(remoteUsers: [RemoteUserInput!]!): [ReaderAccount!]!
+  searchReaderAccounts(
+    query: String!
+    pagination: PaginationInput
+  ): [ReaderAccount!]!
+  myVote(targetType: ReaderVoteTarget!, targetId: ID!): VoteValue
+  locateRemoteObjects(ids: [String!]!): [ReaderObjectReference!]!
+   defineWord(word: String!, scope: [WordScope!], dictionary: WordDictionary): Word
+  viewedTexts(pagination: PaginationInput): PagedTextViews!
+  viewedReaderTexts(pagination: PaginationInput): PagedReaderTexts!
+  locateReaderTexts(ids: [ID!]!): [ReaderText!]!
+}
+
+"""
+Write operations for the reader.
+"""
+type HadesMutations {
+  createSource(name: String!, url: String!): QueryResult
+  createText(input: ReaderTextInput!): QueryResult
+  archiveText(id: ID!): QueryResult
+  markViewed(textId: ID!): QueryResult
+
+  createAnnotation(input: AnnotationInput!): QueryResult
+  editAnnotation(id: ID!, body: String!): QueryResult
+  deleteAnnotation(id: ID!): QueryResult
+
+  addComment(input: CommentInput!): QueryResult
+  editComment(id: ID!, body: String!): QueryResult
+  deleteComment(id: ID!): QueryResult
+
+  vote(input: VoteInput!): QueryResult
+  removeVote(targetType: ReaderVoteTarget!, targetId: ID!): QueryResult
+
+  createPrivateNote(input: PrivateNoteInput!): QueryResult
+  deletePrivateNote(id: ID!): QueryResult
+  shareNotes(input: ShareNotesInput!): QueryResult
+
+  attachObject(source: ID!, target: String!): QueryResult
+  discordLogin(code: String!, state: String!): DiscordLoginResult
+}
+
+extend type Query {
+  hadesQueries: HadesQueries!
+}
+
+extend type Mutation {
+  hadesMutations: HadesMutations!
+}

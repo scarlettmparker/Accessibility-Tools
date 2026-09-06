@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "graphql:generate": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
+    "@graphql-typed-document-node/core": "^3.2.0",
     "@sun/components": "^0.12.7",
     "@sun/utils": "^0.1.28",
+    "graphql": "^16.14.2",
     "i18next": "^25.6.3",
     "lucide-react": "^0.554.0",
     "react": "^19.1.0",
@@ -19,6 +22,10 @@
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.3",
+    "@graphql-codegen/cli": "^6.0.1",
+    "@graphql-codegen/client-preset": "^5.1.1",
+    "@graphql-codegen/typescript": "^5.0.10",
+    "@graphql-codegen/typescript-operations": "^5.1.0",
     "@types/chrome": "^0.1.1",
     "@types/node": "^24.0.15",
     "@types/react": "^19.1.8",

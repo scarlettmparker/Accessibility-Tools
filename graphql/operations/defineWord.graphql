@@ -1,0 +1,41 @@
+query defineWord($word: String!, $scope: [WordScope!], $dictionary: WordDictionary) {
+  hadesQueries {
+    defineWord(word: $word, scope: $scope, dictionary: $dictionary) {
+      id
+      term
+      wordType
+      sourceUrl
+      entries {
+        id
+        term
+        wordType
+        sense
+        translations {
+          term
+          wordType
+          usageNotes
+        }
+        examples
+        note
+      }
+      compounds {
+        id
+        term
+        wordType
+        sense
+        translations {
+          term
+          wordType
+          usageNotes
+        }
+        examples
+        note
+      }
+      relatedWords {
+        id
+        term
+        sourceUrl
+      }
+    }
+  }
+}
