@@ -6,6 +6,7 @@ import { loadAllStyles } from "../utils/load-styles";
 import { setShadowRoot } from "./shadow-root";
 
 const host = document.createElement("span");
+host.id = "accessibility-tools-host";
 
 // Load our font
 const fontLink = document.createElement("link");

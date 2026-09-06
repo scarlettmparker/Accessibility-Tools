@@ -15,6 +15,13 @@
       }
     }
   },
+  "theme": {
+    "red": "Red",
+    "green": "Green",
+    "blue": "Blue",
+    "high-contrast": "High Contrast",
+    "dark": "Dark Mode"
+  },
   "text": {
     "font-size": "Font Size",
     "decrease-font-size": {
