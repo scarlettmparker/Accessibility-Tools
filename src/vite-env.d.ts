@@ -21,6 +21,10 @@ interface ImportMetaEnv {
    * Client secret forwarded as X-Client-Secret.
    */
   readonly VITE_CLIENT_SECRET: string;
+  /**
+   * Service-account API key forwarded as X-Api-Key.
+   */
+  readonly VITE_API_KEY: string;
 }
 
 /**

@@ -21,6 +21,14 @@ type BaseColors = {
    * Computed background colour before theming.
    */
   background: string;
+  /**
+   * Computed text fill before theming.
+   */
+  textFill: string;
+  /**
+   * Computed SVG fill before theming.
+   */
+  fill: string;
 };
 
 type GelVariants = {
@@ -42,7 +50,7 @@ const FILTER_COLORS: Record<string, GelVariants> = {
 
 const OVERLAY_ATTRIBUTE = "data-a11y-theme-overlay";
 const SKIP_SELECTOR =
-  "script, style, noscript, template, head, link, meta, img, video, canvas, svg, iframe";
+  "script, style, noscript, template, head, link, meta, img, video, canvas, iframe";
 
 const baseColors = new WeakMap<Element, BaseColors>();
 const themedElements = new Set<Element>();
@@ -115,6 +123,8 @@ function captureBase(element: Element): BaseColors {
   const base: BaseColors = {
     color: computed.color,
     background: computed.backgroundColor,
+    textFill: computed.getPropertyValue("-webkit-text-fill-color"),
+    fill: computed.getPropertyValue("fill"),
   };
   baseColors.set(element, base);
   return base;
@@ -188,18 +198,88 @@ function normalizeBackgroundForDark(value: string): string | null {
 }
 
 /**
+ * Reports whether a colour value is fully transparent.
+ *
+ * @param value the CSS colour string
+ * @returns true for transparent values
+ */
+function isTransparent(value: string): boolean {
+  if (value === "transparent" || value === "rgba(0, 0, 0, 0)") {
+    return true;
+  }
+  const rgb = parseCssColor(value);
+  return rgb !== null && rgb.a <= 0;
+}
+
+/**
+ * Applies the active rewrite theme to an SVG element.
+ *
+ * Backgrounds are skipped so icons are never boxed in. CurrentColor
+ * fills follow the themed text colour on their own.
+ *
+ * @param element the SVG element to theme
+ * @param base the pre-theme colours
+ * @param theme the rewrite theme in effect
+ * @returns true when anything was changed
+ */
+function applyToSvg(
+  element: SVGElement,
+  base: BaseColors,
+  theme: ThemeName,
+): boolean {
+  let themedColor: string | null;
+  let themedFill: string | null;
+  if (theme === "high-contrast") {
+    themedColor = boostContrast(base.color);
+    themedFill = parseCssColor(base.fill) ? boostContrast(base.fill) : null;
+  } else {
+    themedColor = normalizeTextForDark(base.color);
+    themedFill = parseCssColor(base.fill)
+      ? normalizeTextForDark(base.fill)
+      : null;
+  }
+  let changed = false;
+  if (themedColor) {
+    element.style.setProperty("color", themedColor, "important");
+    changed = true;
+  }
+  if (themedFill) {
+    element.style.setProperty("fill", themedFill, "important");
+    changed = true;
+  }
+  return changed;
+}
+
+/**
  * Applies the active rewrite theme to a single element.
  *
  * @param element the element to theme
  * @param theme the rewrite theme in effect
  */
 function applyToElement(element: Element, theme: ThemeName): void {
-  if (!(element instanceof HTMLElement) || isSkipped(element)) {
+  if (isSkipped(element)) {
+    return;
+  }
+  if (element instanceof SVGElement) {
+    if (applyToSvg(element, captureBase(element), theme)) {
+      themedElements.add(element);
+    }
+    return;
+  }
+  if (!(element instanceof HTMLElement)) {
     return;
   }
   const base = captureBase(element);
   if (theme === "high-contrast") {
-    element.style.setProperty("color", boostContrast(base.color), "important");
+    const color = boostContrast(base.color);
+    element.style.setProperty("color", color, "important");
+    if (!isTransparent(base.textFill)) {
+      element.style.setProperty(
+        "-webkit-text-fill-color",
+        boostContrast(base.textFill),
+        "important",
+      );
+    }
     element.style.setProperty(
       "background-color",
       boostContrast(base.background),
@@ -210,13 +290,41 @@ function applyToElement(element: Element, theme: ThemeName): void {
     const background = normalizeBackgroundForDark(base.background);
     if (color) {
       element.style.setProperty("color", color, "important");
+      if (!isTransparent(base.textFill)) {
+        element.style.setProperty(
+          "-webkit-text-fill-color",
+          normalizeTextForDark(base.textFill) ?? color,
+          "important",
+        );
+      }
     }
     if (background) {
       element.style.setProperty("background-color", background, "important");
     }
-    if (color || background) {
-      themedElements.add(element);
+    if (!color && !background) {
+      return;
     }
+  }
+  themedElements.add(element);
+}
+
+/**
+ * Applies the active rewrite theme to a root, its descendants, and any
+ * open shadow trees below it.
+ *
+ * @param root the root to traverse
+ * @param theme the rewrite theme in effect
+ */
+function applyToChildren(root: Element | ShadowRoot, theme: ThemeName): void {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+  let node = walker.nextNode();
+  while (node) {
+    const child = node as Element;
+    applyToElement(child, theme);
+    if (!isSkipped(child) && child.shadowRoot) {
+      applyToChildren(child.shadowRoot, theme);
+    }
+    node = walker.nextNode();
   }
 }
 
@@ -228,12 +336,7 @@ function applyToElement(element: Element, theme: ThemeName): void {
  */
 function applyToRoot(root: Element, theme: ThemeName): void {
   applyToElement(root, theme);
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
-  let node = walker.nextNode();
-  while (node) {
-    applyToElement(node as Element, theme);
-    node = walker.nextNode();
-  }
+  applyToChildren(root, theme);
 }
 
 /**
@@ -263,9 +366,11 @@ function observeNewElements(theme: ThemeName): void {
 export function clearTheme(): void {
   setOverlay(null);
   themedElements.forEach((element) => {
-    if (element instanceof HTMLElement) {
+    if (element instanceof HTMLElement || element instanceof SVGElement) {
       element.style.removeProperty("color");
       element.style.removeProperty("background-color");
+      element.style.removeProperty("-webkit-text-fill-color");
+      element.style.removeProperty("fill");
     }
   });
   themedElements.clear();

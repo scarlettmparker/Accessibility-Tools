@@ -62,6 +62,7 @@ async function executeQuery<T>(
         "Content-Type": "application/json",
         "X-Client-Id": import.meta.env.VITE_CLIENT_ID,
         "X-Client-Secret": import.meta.env.VITE_CLIENT_SECRET,
+        "X-Api-Key": import.meta.env.VITE_API_KEY,
       },
       body: JSON.stringify(body),
       signal: controller.signal,

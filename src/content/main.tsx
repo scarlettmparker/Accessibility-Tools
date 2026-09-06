@@ -7,6 +7,8 @@ import { setShadowRoot } from "./shadow-root";
 
 const host = document.createElement("span");
 host.id = "accessibility-tools-host";
+host.style.position = "relative";
+host.style.zIndex = "2147483600";
 
 // Load our font
 const fontLink = document.createElement("link");
