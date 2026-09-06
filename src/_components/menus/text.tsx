@@ -30,7 +30,7 @@ const Text = (props: TextProps) => {
           variant="secondary"
           aria-label={t("text.reset-font-size.aria")}
           title={t("text.reset-font-size.title")}
-          style={{ marginLeft: "auto" }}
+          className="push-right"
           onClick={() => resetFontSize()}
         >
           {t("text.reset-font-size.text")}
@@ -59,7 +59,7 @@ const Text = (props: TextProps) => {
           onChange={(e) => setSelectedFont(e.target.value)}
           aria-label={t("text.font-face")}
           data-testid="font-face-select"
-          style={{ marginLeft: "auto" }}
+          className="push-right"
         >
           {fontFaces.map((font) => (
             <SelectOption key={font.value} value={font.value}>

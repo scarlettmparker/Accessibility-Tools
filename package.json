@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sun/components": "^0.12.6",
+    "@sun/components": "^0.12.7",
     "@sun/utils": "^0.1.28",
     "i18next": "^25.6.3",
     "react": "^19.1.0",

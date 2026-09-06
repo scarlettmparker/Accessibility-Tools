@@ -1,46 +1,49 @@
-import { Button, Card, CardBody } from "@sun/components";
-import menu, { MenuEntry } from "@/content/menu";
-import MenuItem from "../_components/menu-item";
+import { Button } from "@sun/components";
+import menu from "@/content/menu";
+import MenuDialog from "../_components/menu-dialog";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 /**
- * Main entry component for the toolbar.
+ * Bottom toolbar opening a draggable dialog per menu.
  */
 const Toolbar = () => {
   const { t } = useTranslation();
   const menuItems = Object.entries(menu);
-  const [currentMenuKey, setCurrentMenuKey] = useState<string | null>(null);
-  /**
-   * Handle menu select, deselect current menu if clicked twice.
-   */
+  const [openMenus, setOpenMenus] = useState<string[]>([]);
+
   const handleMenuSelect = (menuItemKey: string) => {
-    setCurrentMenuKey((prev) => (prev === menuItemKey ? null : menuItemKey));
+    setOpenMenus((prev) =>
+      prev.includes(menuItemKey)
+        ? prev.filter((entry) => entry !== menuItemKey)
+        : [...prev, menuItemKey],
+    );
   };
 
-  const currentMenu = currentMenuKey
-    ? ([currentMenuKey, menu[currentMenuKey]] as [string, MenuEntry])
-    : null;
+  const handleMenuClose = (menuItemKey: string) => {
+    setOpenMenus((prev) => prev.filter((entry) => entry !== menuItemKey));
+  };
 
   return (
     <>
-      {currentMenu && (
-        <div className="menu-item-wrapper">
-          <Card>
-            <CardBody>
-              <MenuItem menuItem={currentMenu} t={t} />
-            </CardBody>
-          </Card>
-        </div>
-      )}
+      {openMenus.map((menuKey, index) => (
+        <MenuDialog
+          key={menuKey}
+          menuItem={[menuKey, menu[menuKey]]}
+          t={t}
+          stackIndex={index}
+          onClose={() => handleMenuClose(menuKey)}
+        />
+      ))}
       <div className="toolbar-wrapper">
         <nav className="toolbar">
-          {menuItems.map(([key]) => (
+          {menuItems.map(([key, entry]) => (
             <Button
               key={key}
               variant="secondary"
+              disabled={!entry.component}
               title={`${t("toolbar.menu.title.prefix")} ${t(
-                `toolbar.menu.title.${key}`,
+                `toolbar.menu.title.${key}`
               )}`}
               aria-label={t(`toolbar.menu.title.${key}`)}
               onClick={() => handleMenuSelect(key)}

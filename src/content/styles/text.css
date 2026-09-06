@@ -9,3 +9,7 @@
   gap: var(--lg);
   align-items: center;
 }
+
+.push-right {
+  margin-left: auto;
+}

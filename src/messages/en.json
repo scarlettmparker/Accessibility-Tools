@@ -1,6 +1,7 @@
 {
   "toolbar": {
     "menu": {
+      "close": "Close",
       "title": {
         "prefix": "Click to open",
         "text-to-speech": "Text to Speech",

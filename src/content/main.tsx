@@ -3,6 +3,7 @@ import "../i18n";
 import Toolbar from "@/_components/toolbar";
 import { createRoot } from "react-dom/client";
 import { loadAllStyles } from "../utils/load-styles";
+import { setShadowRoot } from "./shadow-root";
 
 const host = document.createElement("span");
 
@@ -17,6 +18,7 @@ fontLink.href =
   const style = await loadAllStyles();
 
   const shadow = host.attachShadow({ mode: "open" });
+  setShadowRoot(shadow);
   shadow.appendChild(style);
   shadow.appendChild(fontLink);
   document.body.appendChild(host);
