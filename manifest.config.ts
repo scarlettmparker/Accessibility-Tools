@@ -13,7 +13,16 @@ export default defineManifest({
       48: "public/logo.png",
     },
   },
+  background: {
+    service_worker: "src/background.ts",
+    type: "module",
+  },
   permissions: ["sidePanel", "contentSettings"],
+  host_permissions: [
+    "http://localhost:8083/*",
+    "http://127.0.0.1:8083/*",
+    "https://sun.int.scarlettparker.co.uk/*",
+  ],
   content_scripts: [
     {
       js: ["src/content/main.tsx"],

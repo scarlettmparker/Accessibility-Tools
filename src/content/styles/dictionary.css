@@ -1,0 +1,111 @@
+.dictionary-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lg);
+}
+
+.dictionary-search-row {
+  display: flex;
+  gap: var(--md);
+  align-items: center;
+}
+
+.dictionary-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lg);
+  margin-top: var(--md);
+}
+
+.dictionary-skeleton {
+  width: 100%;
+  height: 16rem;
+}
+
+.dictionary-entries {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style: disc;
+}
+
+.dictionary-entry {
+  margin-bottom: var(--xl);
+}
+
+.dictionary-entry:last-child {
+  margin-bottom: 0;
+}
+
+.dictionary-empty {
+  margin: 0;
+}
+
+.dictionary-error {
+  margin: 0;
+}
+
+.definition-entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--md);
+}
+
+.definition-entry-header {
+  display: flex;
+  gap: var(--md);
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.definition-entry-term {
+  word-break: break-word;
+}
+
+.definition-entry-sense {
+  word-break: break-word;
+}
+
+.definition-entry-translations {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.definition-entry-examples {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.definition-entry-example {
+  word-break: break-word;
+}
+
+.definition-entry-note {
+  margin: 0;
+  word-break: break-word;
+}
+
+.definition-translation {
+  display: flex;
+  gap: var(--sm);
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: var(--sm);
+}
+
+.definition-translation:last-child {
+  margin-bottom: 0;
+}
+
+.definition-translation-term {
+  word-break: break-word;
+}
+
+.definition-translation-type {
+  word-break: break-word;
+}
+
+.definition-translation-usage {
+  word-break: break-word;
+}

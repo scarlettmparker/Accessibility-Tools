@@ -1,16 +1,26 @@
-import Text from "@/_components/menus/text";
-import TextToSpeech from "@/_components/menus/text-to-speech";
-import Theme from "@/_components/menus/theme";
-import Dictionary from "@/_components/menus/dictionary";
-import Translate from "@/_components/menus/translate";
-import Magnify from "@/_components/menus/magnify";
+import TextDialog from "@/_components/menus/text/text-dialog";
+import TextPanel from "@/_components/menus/text/text";
+import ThemeDialog from "@/_components/menus/theme/theme-dialog";
+import DictionaryDialog from "@/_components/menus/dictionary/dictionary-dialog";
 import { TFunction } from "i18next";
 
-type ComponentProps = {
+export type DialogProps = {
   /**
    * i18n translation function.
    */
   t: TFunction;
+  /**
+   * Dialog title.
+   */
+  title: string;
+  /**
+   * Called when the dialog is closed.
+   */
+  onClose: () => void;
+  /**
+   * Stack order among open dialogs.
+   */
+  stackIndex: number;
 };
 
 export type MenuEntry = {
@@ -20,35 +30,41 @@ export type MenuEntry = {
   icon?: string;
 
   /**
-   * Menu component to render.
+   * Panel component rendered without a dialog.
    */
-  component?: React.ComponentType<ComponentProps>;
+  panel?: React.ComponentType<{ t: TFunction }>;
+
+  /**
+   * Dialog component for menus that open a dialog.
+   */
+  dialog?: React.ComponentType<DialogProps>;
 };
+
+// Re-export panels for direct use if needed
+export { TextPanel, TextDialog, ThemeDialog, DictionaryDialog };
 
 const menu: Record<string, MenuEntry> = {
   "text-to-speech": {
     icon: "text-to-speech",
-    component: TextToSpeech,
   },
   text: {
     icon: "text",
-    component: Text,
+    dialog: TextDialog,
+    panel: TextPanel,
   },
   theme: {
     icon: "theme",
-    component: Theme,
+    dialog: ThemeDialog,
   },
   dictionary: {
     icon: "dictionary",
-    component: Dictionary,
+    dialog: DictionaryDialog,
   },
   translate: {
     icon: "translate",
-    component: Translate,
   },
   magnify: {
     icon: "magnify",
-    component: Magnify,
   },
   manual: {
     icon: "manual",

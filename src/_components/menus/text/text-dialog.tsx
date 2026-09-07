@@ -7,52 +7,35 @@ import {
   DialogTitle,
 } from "@sun/components";
 import { TFunction } from "i18next";
-import { useState } from "react";
-import { MenuEntry } from "@/content/menu";
-import { centeredDialogPosition } from "@/utils/dialog-position";
+import { useCenteredDialogPosition } from "@/utils/dialog-position";
 import { getShadowRoot } from "@/content/shadow-root";
-import MenuItem from "../_components/menu-item";
+import Text from "./text";
 
-type MenuDialogProps = {
-  /**
-   * Menu entry to render.
-   */
-  menuItem: [string, MenuEntry];
-
+type TextDialogProps = {
   /**
    * i18n translation function.
    */
   t: TFunction;
-
   /**
-   * Stack order among open dialogs, used to cascade initial positions.
+   * Dialog title.
    */
-  stackIndex: number;
-
+  title: string;
   /**
    * Called when the dialog is closed.
    */
   onClose: () => void;
+  /**
+   * Stack order among open dialogs.
+   */
+  stackIndex: number;
 };
 
-const CASCADE_OFFSET_PX = 28;
-
 /**
- * Draggable library dialog hosting a single toolbar menu.
+ * Draggable dialog hosting the text panel.
  */
-const MenuDialog = (props: MenuDialogProps) => {
-  const { menuItem, t, stackIndex, onClose } = props;
-  const [key] = menuItem;
-  const [initialPosition] = useState(() => {
-    const centered = centeredDialogPosition(
-      { top: window.innerHeight / 2, left: window.innerWidth / 2 },
-      20,
-    );
-    return {
-      top: centered.top + stackIndex * CASCADE_OFFSET_PX,
-      left: centered.left + stackIndex * CASCADE_OFFSET_PX,
-    };
-  });
+const TextDialog = (props: TextDialogProps) => {
+  const { t, title, onClose, stackIndex } = props;
+  const position = useCenteredDialogPosition(stackIndex);
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
@@ -71,15 +54,16 @@ const MenuDialog = (props: MenuDialogProps) => {
       open
       onOpenChange={handleOpenChange}
       draggable
-      position={initialPosition}
+      position={position}
       container={getShadowRoot() ?? document.body}
       onKeyDown={handleKeyDown}
+      className="menu-dialog"
     >
       <DialogHeader>
-        <DialogTitle>{t(`toolbar.menu.title.${key}`)}</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
       </DialogHeader>
       <DialogBody data-no-drag>
-        <MenuItem menuItem={menuItem} t={t} />
+        <Text t={t} />
       </DialogBody>
       <DialogFooter>
         <Button
@@ -95,4 +79,4 @@ const MenuDialog = (props: MenuDialogProps) => {
   );
 };
 
-export default MenuDialog;
+export default TextDialog;

@@ -15,6 +15,15 @@
       }
     }
   },
+  "dictionary": {
+    "placeholder": "Enter a word…",
+    "search": "Search",
+    "no-result": "No definition found.",
+    "error": "Failed to load definition.",
+    "source": "Source: WordReference",
+    "source-title": "Open definition in a new tab",
+    "source-aria": "Open WordReference definition in a new tab"
+  },
   "theme": {
     "red": "Red",
     "green": "Green",

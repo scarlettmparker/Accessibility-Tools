@@ -1,0 +1,18 @@
+.menu-dialog {
+  width: 100%;
+  max-width: 24rem;
+}
+
+.menu-dialog-footer {
+  margin-left: 0;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-dialog-footer-left {
+  margin: 0;
+}
+
+.menu-dialog-footer-left a {
+  word-break: break-all;
+}

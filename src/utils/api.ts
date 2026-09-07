@@ -53,6 +53,58 @@ type PropertySetData = {
 };
 
 /**
+ * Background response shape.
+ */
+type BackgroundResponse = {
+  /**
+   * Whether the fetch succeeded at HTTP level.
+   */
+  ok: boolean;
+  /**
+   * HTTP status.
+   */
+  status: number;
+  /**
+   * Raw body text.
+   */
+  body: string;
+};
+
+/**
+ * Runs a fetch via the background service worker to bypass page CORS.
+ *
+ * @param endpoint the GraphQL endpoint
+ * @param headers the headers to send
+ * @param body the GraphQL body
+ * @returns the background response
+ */
+function fetchViaBackground(
+  endpoint: string,
+  headers: Record<string, string>,
+  body: GraphQLBody,
+): Promise<BackgroundResponse> {
+  const queryText = body.query;
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error("Background request timed out")), 10000);
+    chrome.runtime.sendMessage(
+      { type: "GRAPHQL_REQUEST", query: queryText, variables: body.variables, endpoint, headers },
+      (response: BackgroundResponse | undefined) => {
+        clearTimeout(timeout);
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+          return;
+        }
+        if (!response) {
+          reject(new Error("No response from background"));
+          return;
+        }
+        resolve(response);
+      },
+    );
+  });
+}
+
+/**
  * Runs a GraphQL operation against the back-end.
  */
 async function executeQuery<T>(
@@ -61,25 +113,48 @@ async function executeQuery<T>(
 ): Promise<ApiResponse<T>> {
   const queryText = typeof query === "string" ? query : print(query);
   const endpoint = import.meta.env.VITE_GRAPHQL_ENDPOINT;
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "X-Client-Id": import.meta.env.VITE_CLIENT_ID,
+    "X-Client-Secret": import.meta.env.VITE_CLIENT_SECRET,
+    "X-Api-Key": import.meta.env.VITE_API_KEY,
+  };
+  const body: GraphQLBody = { query: queryText, variables };
+
+  const isExtension = typeof chrome !== "undefined" && !!chrome.runtime?.id;
+
   try {
-    const body: GraphQLBody = { query: queryText, variables };
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Client-Id": import.meta.env.VITE_CLIENT_ID,
-        "X-Client-Secret": import.meta.env.VITE_CLIENT_SECRET,
-        "X-Api-Key": import.meta.env.VITE_API_KEY,
-      },
-      body: JSON.stringify(body),
-      signal: controller.signal,
-    });
-    if (!response.ok) {
-      return { success: false, error: `HTTP ${response.status}` };
+    let rawBody: string;
+    let ok: boolean;
+    let status: number;
+
+    if (isExtension) {
+      const res = await fetchViaBackground(endpoint, headers, body);
+      rawBody = res.body;
+      ok = res.ok;
+      status = res.status;
+    } else {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(body),
+          signal: controller.signal,
+        });
+        rawBody = await response.text();
+        ok = response.ok;
+        status = response.status;
+      } finally {
+        clearTimeout(timeoutId);
+      }
     }
-    const result = await response.json();
+
+    if (!ok) {
+      return { success: false, error: `HTTP ${status}` };
+    }
+    const result = JSON.parse(rawBody);
     if (result.errors) {
       const message = result.errors
         .map((entry: { message: string }) => entry.message)
@@ -93,8 +168,6 @@ async function executeQuery<T>(
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     return { success: false, error: message };
-  } finally {
-    clearTimeout(timeoutId);
   }
 }
 

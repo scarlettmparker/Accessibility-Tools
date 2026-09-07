@@ -1,6 +1,5 @@
 import { Button } from "@sun/components";
 import menu from "@/content/menu";
-import MenuDialog from "../_components/menu-dialog";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -26,22 +25,29 @@ const Toolbar = () => {
 
   return (
     <>
-      {openMenus.map((menuKey, index) => (
-        <MenuDialog
-          key={menuKey}
-          menuItem={[menuKey, menu[menuKey]]}
-          t={t}
-          stackIndex={index}
-          onClose={() => handleMenuClose(menuKey)}
-        />
-      ))}
+      {openMenus.map((menuKey, index) => {
+        const entry = menu[menuKey];
+        const DialogComponent = entry.dialog;
+        if (!DialogComponent) {
+          return null;
+        }
+        return (
+          <DialogComponent
+            key={menuKey}
+            t={t}
+            title={t(`toolbar.menu.title.${menuKey}`)}
+            stackIndex={index}
+            onClose={() => handleMenuClose(menuKey)}
+          />
+        );
+      })}
       <div className="toolbar-wrapper">
         <nav className="toolbar">
           {menuItems.map(([key, entry]) => (
             <Button
               key={key}
               variant="secondary"
-              disabled={!entry.component}
+              disabled={!entry.dialog}
               title={`${t("toolbar.menu.title.prefix")} ${t(
                 `toolbar.menu.title.${key}`
               )}`}
