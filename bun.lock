@@ -6,7 +6,7 @@
       "name": "accessibility-tools",
       "dependencies": {
         "@graphql-typed-document-node/core": "^3.2.0",
-        "@sun/components": "^0.12.7",
+        "@sun/components": "^0.12.14",
         "@sun/utils": "^0.1.28",
         "graphql": "^16.14.2",
         "i18next": "^25.6.3",
@@ -312,7 +312,7 @@
 
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.53.3", "", { "os": "win32", "cpu": "x64" }, "sha512-UhTd8u31dXadv0MopwGgNOBpUVROFKWVQgAg5N1ESyCz8AuBcMqm4AuTjrwgQKGDfoFuz02EuMRHQIw/frmYKQ=="],
 
-    "@sun/components": ["@sun/components@0.12.7", "https://registry.int.scarlettparker.co.uk/@sun/components/-/components-0.12.7.tgz", { "dependencies": { "@sun/shared": "^0.2.0", "@sun/utils": "^0.1.21" }, "peerDependencies": { "react": "^19.0.0", "react-dom": "^19.0.0" } }, "sha512-supeNROFnflgZLGscSkZR+veQUpOHsDZHPgKBbhEaI9TjJmUUzUC1anHNYqUhbekVgseJra5FuiRyZr9L8vtIg=="],
+    "@sun/components": ["@sun/components@0.12.14", "https://registry.int.scarlettparker.co.uk/@sun/components/-/components-0.12.14.tgz", { "dependencies": { "@sun/shared": "^0.2.0", "@sun/utils": "^0.2.0", "lucide-preact": "^1.59.0" }, "peerDependencies": { "preact": "^11.0.0" } }, "sha512-HRVf+Ht0Pc2bOSXuun8ELR1GlzGrDv7p0cISZujftb/bR1zwPdJwoaELnljurpxQQ/69aun2R2PtAVN+gUOpiw=="],
 
     "@sun/shared": ["@sun/shared@0.2.12", "https://registry.int.scarlettparker.co.uk/@sun/shared/-/shared-0.2.12.tgz", {}, "sha512-spDJFUSnio/Xv9/+v0USInoxcrrP6OuIl7mk9NG/1dp5zPg+ipnuOGoy3y7Tqjh1Zf4T+m5DhoKKwiNlYMkWjw=="],
 
@@ -616,6 +616,8 @@
 
     "lru-cache": ["lru-cache@5.1.1", "", { "dependencies": { "yallist": "^3.0.2" } }, "sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w=="],
 
+    "lucide-preact": ["lucide-preact@1.60.0", "", { "peerDependencies": { "preact": "^10.27.2 || ^11.0.0-0" } }, "sha512-SXcv6sTczS1Xvnn7egHznYlAR9ZOh7IYkaujqtT9HElYkEVcokX3NvEiSwE/xHfagdoOygV9RRbmu1d0DwbQqw=="],
+
     "lucide-react": ["lucide-react@0.554.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-St+z29uthEJVx0Is7ellNkgTEhaeSoA42I7JjOCBCrc5X6LYMGSv0P/2uS5HDLTExP5tpiqRD2PyUEOS6s9UXA=="],
 
     "magic-string": ["magic-string@0.30.21", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.5" } }, "sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ=="],
@@ -687,6 +689,8 @@
     "picomatch": ["picomatch@4.0.3", "", {}, "sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q=="],
 
     "postcss": ["postcss@8.5.6", "", { "dependencies": { "nanoid": "^3.3.11", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg=="],
+
+    "preact": ["preact@11.0.1", "", { "peerDependencies": { "preact-render-to-string": ">=6.7.0" }, "optionalPeers": ["preact-render-to-string"] }, "sha512-TNNwEq++jYNHy747LziCjPRVgEwnLSOIOAw/oYcjI3Tdnubx2EXtt76I0an8PATvUWtx/DX1kFIg1eFN+O/fkw=="],
 
     "process-nextick-args": ["process-nextick-args@2.0.1", "", {}, "sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag=="],
 
@@ -885,6 +889,8 @@
     "@inquirer/external-editor/iconv-lite": ["iconv-lite@0.7.3", "", { "dependencies": { "safer-buffer": ">= 2.1.2 < 3.0.0" } }, "sha512-IKXpvIzjnC9XTAUbVBcMfGS0EPaIXtW6v+zr+RRp+hqULEpo0owZax6wyRwPOJbWbzjYspQwusTsfVr0ifh4uQ=="],
 
     "@rollup/pluginutils/picomatch": ["picomatch@2.3.1", "", {}, "sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA=="],
+
+    "@sun/components/@sun/utils": ["@sun/utils@0.2.0", "https://registry.int.scarlettparker.co.uk/@sun/utils/-/utils-0.2.0.tgz", {}, "sha512-VE/sJEWeTs5+IPRQSM8FgNttSN7ychZxrT3/IBMyZ2k+/IMwSwbnRfYmLqqnSXnFk7resFnrio7E3VnWmgqztg=="],
 
     "@vitejs/plugin-react/react-refresh": ["react-refresh@0.17.0", "", {}, "sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ=="],
 

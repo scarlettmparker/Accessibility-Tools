@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@sun/components": "^0.12.7",
+    "@sun/components": "^0.12.14",
     "@sun/utils": "^0.1.28",
     "graphql": "^16.14.2",
     "i18next": "^25.6.3",
